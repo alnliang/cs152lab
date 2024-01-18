@@ -16,7 +16,7 @@
 | Not Equality          | x != y       |
 | Greater Than          | x > y        |
 | Greater Than Equal    | x >= y       |
-| Write                 | clong(x)     |
+| Write                 | clog(x)     |
 | Read                  | cfetch(x)      |
 | Arrays                | int [8] array|
 | Comments              | // This is a comment|
