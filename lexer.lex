@@ -31,7 +31,16 @@ COMMENT //.*\n
 "-" {printf("SUBTRACT\n");}
 "*" {printf("MULT\n");}
 "/" {printf("DIVIDE\n");}
-"%" {printF("MOD\n");}
+"%" {printf("MOD\n");}
+"=" {printf("EQUALS\n");}
+"<" {printf("Less\n";}
+"<=" {printf("LessEql\n");}
+">" {printf("Greater\n");}
+">=" {printf("GreaterEql\n");}
+"==" {printf("Equality\n");}
+"!=" {printf("NotEql\n");}
+"variable_name" {printf("Ident\n");}
+"10311517" {printf("NUM\n");}
 %%
 
 
