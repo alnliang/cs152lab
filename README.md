@@ -19,7 +19,7 @@
 | Write                 | clog(x)     |
 | Read                  | cfetch(x)      |
 | Arrays                | int [8] array|
-| Comments              | // This is a comment|
+| Comments              | $ This is a comment|
 
 ### Table of Symbols
 
