@@ -29,6 +29,9 @@ COMMENT //.*\n
 "," {printf("COMMA\n");}
 "+" {printf("PLUS\n");}
 "-" {printf("SUBTRACT\n");}
+"*" {printf("MULT\n");}
+"/" {printf("DIVIDE\n");}
+"%" {printF("MOD\n");}
 %%
 
 
