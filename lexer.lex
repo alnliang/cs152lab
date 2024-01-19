@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-}%
+%}
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
@@ -33,7 +33,7 @@ COMMENT //.*\n
 "/" {printf("DIVIDE\n");}
 "%" {printf("MOD\n");}
 "=" {printf("EQUALS\n");}
-"<" {printf("Less\n";}
+"<" {printf("Less\n");}
 "<=" {printf("LessEql\n");}
 ">" {printf("Greater\n");}
 ">=" {printf("GreaterEql\n");}
