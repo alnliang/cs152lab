@@ -1,15 +1,15 @@
 func main() {
 	int [4] array;
 
-	// Should print out '2'
+	$ Should print out '2'
 	array[0] = 2;
 	clog(array[0]);
 
-	// Should print out '4'
+	$ Should print out '4'
 	array[1] = array[0] + array[0];
 	clog(array[1]);
 
-	// Should print out '8'
+	$ Should print out '8'
 	array[2] = array[1] + 2 * 2;
 	clog(array[2]);
 

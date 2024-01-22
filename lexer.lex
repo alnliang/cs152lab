@@ -4,11 +4,10 @@
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
-COMMENT //.*\n
+COMMENT $.*\n
+WHITESPACE [ \n\t]
 
 %%
-{DIGIT}+ {printf("NUMBER: %s\n", yytext);}
-{ALPHA}+ {printf("ALPHA: %s\n", yytext);}
 ";" {printf("SEMICOLON\n");}
 "func" {printf("FUNCTION\n");}
 "return" {printf("RETURN\n");}
@@ -41,6 +40,10 @@ COMMENT //.*\n
 "!=" {printf("NotEql\n");}
 "variable_name" {printf("Ident\n");}
 "10311517" {printf("NUM\n");}
+{DIGIT}+ {printf("NUMBER: %s\n", yytext);}
+{ALPHA}+ {printf("ALPHA: %s\n", yytext);}
+{COMMENT} {}
+{WHITESPACE} {}
 %%
 
 
