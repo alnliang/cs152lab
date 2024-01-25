@@ -11,7 +11,7 @@ func main() {
     	c = 1;
 	}
 
-	// Should print out '1'.
+	$ Should print out '1'.
 	clog(c);
 
 	a = 100;
@@ -22,6 +22,6 @@ func main() {
     	c = 1;
 	}
 
-	// Should print out '0'
+	$ Should print out '0'
 	clog(c);
 }
