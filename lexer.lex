@@ -38,8 +38,8 @@ WHITESPACE [ \n\t]
 "else" {printf("ELSE\n");}
 "break" {printf("BREAK\n");}
 "continue" {printf("CONT\n");}
-"variable_name" {printf("Ident\n");}
-"10311517" {printf("NUM\n");}
+"for" {printf("FOR LOOP\n");}
+"while" {printf("WHILE LOOP\n");}
 {DIGIT}+ {printf("NUMBER: %s\n", yytext);}
 {ALPHA}+ {printf("ALPHA: %s\n", yytext);}
 {COMMENT} 
@@ -49,6 +49,6 @@ WHITESPACE [ \n\t]
 main()
 	{
 	yylex();
-	printf("Lexer");
+	printf("Finished");
 	}
 
