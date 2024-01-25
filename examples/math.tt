@@ -6,27 +6,27 @@ func main() {
   a = 100;
   b = 50;
 
-  // This should output '150'
+  $ This should output '150'
   c = a + b;
   clog(c);
 
-  // This should output '50'
+  $ This should output '50'
   c = a - b;
   clog(c);
 
-  // This should output '5000'
+  $ This should output '5000'
   c = a * b;
   clog(c);
 
-  // This should output '2'
+  $ This should output '2'
   c = a / b;
   clog(c);
 
-  // This should output '0'
+  $ This should output '0'
   c = a % b;
   clog(c);
 
-  // Complex Expression. (4 + 2) * 7
+  $ Complex Expression. (4 + 2) * 7
   a = 4;
   b = 7;
   c = (a + 2) * b;
