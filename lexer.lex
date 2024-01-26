@@ -57,13 +57,13 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 }
 
 {{INVALID_START} { 
-			printf("Error at line %d, column %d: incorrect symbol \"%s\" must begin with a letter\n", lineNum, lineCol, yytext); 
-			exit(0);   
+			printf("Error at line %d, column %d: incorrect symbol \"%s\" must begin with a letter \n", lineNum, lineCol, yytext); 
+			exit(1);   
 }
 
 {{INVALID_UNDERSCORE}  { 
-			printf("Error at line %d, column %d: incorrect symbol \"%s\" cannot end with an underscore\n", lineNum, lineCol, yytext); 
-			exit(0); 
+			printf("Error at line %d, column %d: incorrect symbol \"%s\" cannot end with an underscore \n", lineNum, lineCol, yytext); 
+			exit(1); 
 }
 
 %%
