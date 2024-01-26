@@ -12,6 +12,8 @@ NEWLINE [\n]
 IDENTIFIER {ALPHA}+(({ALPHA}|{DIGIT})*"_")*({ALPHA}|{DIGIT})+
 INVALID_START ({DIGIT}|"_")+({ALPHA}|{IDENTIFIER})
 INVALID_UNDERSCORE {IDENTIFIER}"_"+
+FUNC "func "{IDENTIFIER}"("(" ")*")"
+FUNCPARAM "func "{IDENTIFIER}"("((" ")*"int "{IDENTIFIER}(" ")*","(" ")+)*((" ")*"int "{IDENTIFIER}(" ")*)
 
 %%
 ";" {printf("SEMICOLON\n"); ++lineCol;}
@@ -34,7 +36,6 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 ">=" {printf("GreaterEql\n"); ++lineCol; ++lineCol;}
 "==" {printf("Equality\n"); ++lineCol; ++lineCol;}
 "!=" {printf("NotEql\n"); ++lineCol; ++lineCol;}
-"func" {printf("FUNCTION\n"); lineCol += 4;}
 "return" {printf("RETURN\n"); lineCol += 6;}
 "int" {printf("INTEGER\n"); lineCol += 3;}
 "clog" {printf("PRINT\n"); lineCol += 4;}
@@ -48,6 +49,8 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 {IDENTIFIER} {printf("IDENTIFIER: %s\n", yytext); lineCol += yyleng;}
 {DIGIT}+ {printf("NUMBER: %s\n", yytext); lineCol += yyleng;}
 {ALPHA}+ {printf("ALPHA: %s\n", yytext); lineCol += yyleng;}
+{FUNC} {printf("FUNCTION"); lineCol += yyleng;}
+{FUNCPARAM} {printf("FUNCTION"); lineCol += yyleng;}
 {COMMENT} 
 {WHITESPACE}+ {lineCol += yyleng;}
 {NEWLINE} {++lineNum;}
