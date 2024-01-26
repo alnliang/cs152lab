@@ -10,10 +10,11 @@ COMMENT $.*\n
 WHITESPACE [ \t]
 NEWLINE [\n]
 IDENTIFIER {ALPHA}+(({ALPHA}|{DIGIT})*"_")*({ALPHA}|{DIGIT})+
+IDENTORALPHA {IDENTIFIER}|{ALPHA}
 INVALID_START ({DIGIT}|"_")+({ALPHA}|{IDENTIFIER})
 INVALID_UNDERSCORE {IDENTIFIER}"_"+
-FUNC "func "{IDENTIFIER}"("(" ")*")"
-FUNCPARAM "func "{IDENTIFIER}"("((" ")*"int "{IDENTIFIER}(" ")*","(" ")+)*((" ")*"int "{IDENTIFIER}(" ")*)")"
+FUNC "func "{IDENTORALPHA}"("(" ")*")"
+FUNCPARAM "func "{IDENTORALPHA}"("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((" ")*"int "{IDENTORALPHA}(" ")*)")"
 
 %%
 ";" {printf("SEMICOLON\n"); ++lineCol;}
