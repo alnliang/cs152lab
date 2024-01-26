@@ -45,6 +45,7 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 "break" {printf("BREAK\n"); lineCol += 5;}
 "continue" {printf("CONT\n"); lineCol += 8;}
 "for" {printf("FOR LOOP\n"); lineCol += 3;}
+{IDENTIFIER} {printf("IDENTIFIER: %s\n", yytext; lineCol += yyleng;}
 {DIGIT}+ {printf("NUMBER: %s\n", yytext); lineCol += yyleng;}
 {ALPHA}+ {printf("ALPHA: %s\n", yytext); lineCol += yyleng;}
 {COMMENT} 
