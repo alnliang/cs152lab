@@ -39,6 +39,7 @@ WHITESPACE [ \n\t]
 "break" {printf("BREAK\n");}
 "continue" {printf("CONT\n");}
 "for" {printf("FOR LOOP\n");}
+"\n"{ALPHA}+ {printf("ERROR");}
 {DIGIT}+ {printf("NUMBER: %s\n", yytext);}
 {ALPHA}+ {printf("ALPHA: %s\n", yytext);}
 {COMMENT} 
