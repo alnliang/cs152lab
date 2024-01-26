@@ -50,8 +50,8 @@ FUNCPARAM "func "{IDENTORALPHA}"("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((
 {IDENTIFIER} {printf("IDENTIFIER: %s\n", yytext); lineCol += yyleng;}
 {DIGIT}+ {printf("NUMBER: %s\n", yytext); lineCol += yyleng;}
 {ALPHA}+ {printf("ALPHA: %s\n", yytext); lineCol += yyleng;}
-{FUNC} {printf("FUNCTION"); lineCol += yyleng;}
-{FUNCPARAM} {printf("FUNCTION"); lineCol += yyleng;}
+{FUNC} {printf("FUNCTION\n"); lineCol += yyleng;}
+{FUNCPARAM} {printf("FUNCTION\n"); lineCol += yyleng;}
 {COMMENT} 
 {WHITESPACE}+ {lineCol += yyleng;}
 {NEWLINE} {++lineNum;}
