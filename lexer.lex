@@ -44,6 +44,11 @@ WHITESPACE [ \n\t]
 {ALPHA}+ {printf("ALPHA: %s\n", yytext);}
 {COMMENT} 
 {WHITESPACE}+ 
+. {
+  printf("Error at line %d, column %d: unrecognized symbol \"%s\" \n",
+	   lineNum, lineCol, yytext);
+  exit(1);
+}
 %%
 
 main()
