@@ -28,7 +28,7 @@ WHITESPACE [ \n\t]
 ">=" {printf("GreaterEql\n");}
 "==" {printf("Equality\n");}
 "!=" {printf("NotEql\n");}
-"func "({ALPHA} | {DIGIT})+"("({ALPHA}+ | "," | {DIGIT}+)*")" {printf("FUNCTION\n");}
+"func" {printf("FUNCTION\n");}
 "return" {printf("RETURN\n");}
 "int" {printf("INTEGER\n");}
 "clog" {printf("PRINT\n");}
