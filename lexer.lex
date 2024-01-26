@@ -15,7 +15,7 @@ INVALID_START ({DIGIT}|"_")+({ALPHA}|{IDENTIFIER})
 INVALID_UNDERSCORE {IDENTIFIER}"_"+
 FUNC "func "{IDENTORALPHA}"("(" ")*")"
 FUNCPARAM "func "{IDENTORALPHA}"("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((" ")*"int "{IDENTORALPHA}(" ")*)")"
-MAINFUNC "func main("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((" ")*"int "{IDENTORALPHA}(" ")*)")"
+MAINFUNC ("func ")"main("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((" ")*"int "{IDENTORALPHA}(" ")*)")"
 
 %%
 ";" {printf("SEMICOLON\n"); ++lineCol;}
