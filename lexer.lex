@@ -13,7 +13,7 @@ IDENTIFIER {ALPHA}+(({ALPHA}|{DIGIT})*"_")*({ALPHA}|{DIGIT})+
 INVALID_START ({DIGIT}|"_")+({ALPHA}|{IDENTIFIER})
 INVALID_UNDERSCORE {IDENTIFIER}"_"+
 FUNC "func "{IDENTIFIER}"("(" ")*")"
-FUNCPARAM "func "{IDENTIFIER}"("((" ")*"int "{IDENTIFIER}(" ")*","(" ")+)*((" ")*"int "{IDENTIFIER}(" ")*)
+FUNCPARAM "func "{IDENTIFIER}"("((" ")*"int "{IDENTIFIER}(" ")*","(" ")+)*((" ")*"int "{IDENTIFIER}(" ")*)")"
 
 %%
 ";" {printf("SEMICOLON\n"); ++lineCol;}
