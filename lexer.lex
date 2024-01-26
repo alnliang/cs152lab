@@ -1,49 +1,52 @@
 %{
 #include <stdio.h>
+int lineNum = 1;
+int lineCol = 0;
 %}
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
 COMMENT $.*\n
-WHITESPACE [ \n\t]
+WHITESPACE [ \t]
+NEWLINE [\n]
 
 %%
-";" {printf("SEMICOLON\n");}
-"(" {printf("LFTPAREN\n");}
-")" {printf("RGTPAREN\n");}
-"{" {printf("LEFTCURLY\n");}
-"}" {printf("RIGHTCURLY\n");}
-"[" {printf("LEFTBRACK\n");}
-"]" {printf("RIGHTBRACK\n");}
-"," {printf("COMMA\n");}
-"+" {printf("PLUS\n");}
-"-" {printf("SUBTRACT\n");}
-"*" {printf("MULT\n");}
-"/" {printf("DIVIDE\n");}
-"%" {printf("MOD\n");}
-"=" {printf("EQUALS\n");}
-"<" {printf("Less\n");}
-"<=" {printf("LessEql\n");}
-">" {printf("Greater\n");}
-">=" {printf("GreaterEql\n");}
-"==" {printf("Equality\n");}
-"!=" {printf("NotEql\n");}
-"func" {printf("FUNCTION\n");}
-"return" {printf("RETURN\n");}
-"int" {printf("INTEGER\n");}
-"clog" {printf("PRINT\n");}
-"cfetch" {printf("READ\n");}
-"while" {printf("WHILE\n");}
-"if" {printf("IF\n");}
-"else" {printf("ELSE\n");}
-"break" {printf("BREAK\n");}
-"continue" {printf("CONT\n");}
-"for" {printf("FOR LOOP\n");}
-"\n"{DIGIT}+{ALPHA}+ {printf("ERROR");}
-{DIGIT}+ {printf("NUMBER: %s\n", yytext);}
-{ALPHA}+ {printf("ALPHA: %s\n", yytext);}
+";" {printf("SEMICOLON\n"); ++lineCol;}
+"(" {printf("LFTPAREN\n"); ++lineCol;}
+")" {printf("RGTPAREN\n"); ++lineCol;}
+"{" {printf("LEFTCURLY\n"); ++lineCol;}
+"}" {printf("RIGHTCURLY\n"); ++lineCol;}
+"[" {printf("LEFTBRACK\n"); ++lineCol;}
+"]" {printf("RIGHTBRACK\n"); ++lineCol;}
+"," {printf("COMMA\n"); ++lineCol;}
+"+" {printf("PLUS\n"); ++lineCol;}
+"-" {printf("SUBTRACT\n"); ++lineCol;}
+"*" {printf("MULT\n"); ++lineCol;}
+"/" {printf("DIVIDE\n"); ++lineCol;}
+"%" {printf("MOD\n"); ++lineCol;} 
+"=" {printf("EQUALS\n"); ++lineCol;}
+"<" {printf("Less\n"); ++lineCol;}
+"<=" {printf("LessEql\n"); ++lineCol; ++lineCol;}
+">" {printf("Greater\n"); ++lineCol;}
+">=" {printf("GreaterEql\n"); ++lineCol; ++lineCol;}
+"==" {printf("Equality\n"); ++lineCol; ++lineCol;}
+"!=" {printf("NotEql\n"); ++lineCol; ++lineCol;}
+"func" {printf("FUNCTION\n"); lineCol += 4;}
+"return" {printf("RETURN\n"); lineCol += 6;}
+"int" {printf("INTEGER\n"); lineCol += 3;}
+"clog" {printf("PRINT\n"); lineCol += 4;}
+"cfetch" {printf("READ\n"); lineCol += 6;}
+"while" {printf("WHILE\n"); lineCol += 5;}
+"if" {printf("IF\n"); lineCol += 2;}
+"else" {printf("ELSE\n"); lineCol += 4;}
+"break" {printf("BREAK\n"); lineCol += 5;}
+"continue" {printf("CONT\n"); lineCol += 8;}
+"for" {printf("FOR LOOP\n"); lineCol += 3;}
+{DIGIT}+ {printf("NUMBER: %s\n", yytext); lineCol += yyleng;}
+{ALPHA}+ {printf("ALPHA: %s\n", yytext); lineCol += yyleng;}
 {COMMENT} 
-{WHITESPACE}+ 
+{WHITESPACE}+ {lineCol += yyleng;}
+{NEWLINE} {++lineNum;}
 . {
   printf("Error at line %d, column %d: unrecognized symbol \"%s\" \n",
 	   lineNum, lineCol, yytext);
