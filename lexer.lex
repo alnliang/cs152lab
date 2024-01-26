@@ -9,6 +9,9 @@ ALPHA [a-zA-Z]
 COMMENT $.*\n
 WHITESPACE [ \t]
 NEWLINE [\n]
+IDENTIFIER {ALPHA}+(({ALPHA}|{DIGIT})*"_")*({ALPHA}|{DIGIT})+
+INVALID_START ({DIGIT}|"_")+{IDENTIFIER}
+INVALID_UNDERSCORE {IDENTIFIER}"_"+
 
 %%
 ";" {printf("SEMICOLON\n"); ++lineCol;}
@@ -52,6 +55,17 @@ NEWLINE [\n]
 	   lineNum, lineCol, yytext);
   exit(1);
 }
+
+{{INVALID_START} { 
+			printf("Error at line %d, column %d: incorrect symbol \"%s\" must begin with a letter\n", lineNum, lineCol, yytext); 
+			exit(0);   
+}
+
+{{INVALID_UNDERSCORE}  { 
+			printf("Error at line %d, column %d: incorrect symbol \"%s\" cannot end with an underscore\n", lineNum, lineCol, yytext); 
+			exit(0); 
+}
+
 %%
 
 main()
