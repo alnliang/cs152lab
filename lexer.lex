@@ -15,6 +15,7 @@ INVALID_START ({DIGIT}|"_")+({ALPHA}|{IDENTIFIER})
 INVALID_UNDERSCORE {IDENTIFIER}"_"+
 FUNC "func "{IDENTORALPHA}"("(" ")*")"
 FUNCPARAM "func "{IDENTORALPHA}"("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((" ")*"int "{IDENTORALPHA}(" ")*)")"
+MAINFUNC "func main("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((" ")*"int "{IDENTORALPHA}(" ")*)")"
 
 %%
 ";" {printf("SEMICOLON\n"); ++lineCol;}
@@ -52,6 +53,7 @@ FUNCPARAM "func "{IDENTORALPHA}"("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((
 {ALPHA}+ {printf("ALPHA: %s\n", yytext); lineCol += yyleng;}
 {FUNC} {printf("FUNCTION\n"); lineCol += yyleng;}
 {FUNCPARAM} {printf("FUNCTION\n"); lineCol += yyleng;}
+{MAINFUNC} {printf("MAIN FUNCTION\n"); lineCol += yyleng;}
 {COMMENT} 
 {WHITESPACE}+ {lineCol += yyleng;}
 {NEWLINE} {++lineNum;}
