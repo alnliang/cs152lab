@@ -16,6 +16,7 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 FUNC "func "{IDENTORALPHA}"("(" ")*")"
 FUNCPARAM "func "{IDENTORALPHA}"("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((" ")*"int "{IDENTORALPHA}(" ")*)")"
 MAINFUNC ("func ")"main("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((" ")*"int "{IDENTORALPHA}(" ")*)")"
+MAINFUNCNOPARAM ("func ")"main("(" ")*")"
 
 %%
 ";" {printf("SEMICOLON\n"); ++lineCol;}
@@ -51,9 +52,10 @@ MAINFUNC ("func ")"main("((" ")*"int "{IDENTORALPHA}(" ")*","(" ")+)*((" ")*"int
 {IDENTIFIER} {printf("IDENTIFIER: %s\n", yytext); lineCol += yyleng;}
 {DIGIT}+ {printf("NUMBER: %s\n", yytext); lineCol += yyleng;}
 {ALPHA}+ {printf("ALPHA: %s\n", yytext); lineCol += yyleng;}
+{MAINFUNC} {printf("MAIN FUNCTION\n"); lineCol += yyleng;}
+{MAINFUNCNOPARAM} {printf("MAIN FUNCTION\n"); lineCol += yyleng;}
 {FUNC} {printf("FUNCTION\n"); lineCol += yyleng;}
 {FUNCPARAM} {printf("FUNCTION\n"); lineCol += yyleng;}
-{MAINFUNC} {printf("MAIN FUNCTION\n"); lineCol += yyleng;}
 {COMMENT} 
 {WHITESPACE}+ {lineCol += yyleng;}
 {NEWLINE} {++lineNum;}
