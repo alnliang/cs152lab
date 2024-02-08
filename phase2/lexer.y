@@ -1,9 +1,10 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
 extern int yylex();
 extern int lineNum;
 extern int lineCol;
-/*the reason I used extern int here and didnt directly define it is because it's already defined in another file */
+/*the reason I used extern int here and didn't directly define it is because it's already defined in another file */
 %} 
 
 %union {
