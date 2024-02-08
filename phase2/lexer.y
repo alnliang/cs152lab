@@ -57,5 +57,20 @@ program: %empty
     {printf("Program -> Function Program\n");}
 ;
 
+Function: FUNC IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RIGHTCURLY
+{printf("Function -> FUNC IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
+;
+
+Parameter: IDENTIFIER COMMA INTEGER
+{printf("Parameter -> IDENTIFIER COMMA INTEGER\n");}
+;
+
+Parameters: %empty
+{printf("Parameters -> epsilon\n");}
+    | Parameter COMMA Parameters
+    {printf("Parameters -> Parameter COMMA Parameters");}
+;
+
+
 
 %%
