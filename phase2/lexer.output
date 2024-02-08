@@ -1,0 +1,80 @@
+Terminals unused in grammar
+
+   IDENT
+   NUMBER
+   FUNC
+   MAINFUNC
+   SEMICOLON
+   COMMA
+   LEFTCURLY
+   RIGHTCURLY
+   LEFTBRACK
+   RIGHTBRACK
+   PLUS
+   MINUS
+   TIMES
+   DIVIDE
+   MOD
+   LFTPAREN
+   RGTPAREN
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: %empty
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+IDENT (258)
+NUMBER (259)
+FUNC (260)
+MAINFUNC (261)
+SEMICOLON (262)
+COMMA (263)
+LEFTCURLY (264)
+RIGHTCURLY (265)
+LEFTBRACK (266)
+RIGHTBRACK (267)
+PLUS (268)
+MINUS (269)
+TIMES (270)
+DIVIDE (271)
+MOD (272)
+LFTPAREN (273)
+RGTPAREN (274)
+
+
+Nonterminals, with rules where they appear
+
+$accept (20)
+    on left: 0
+program (21)
+    on left: 1, on right: 0
+
+
+State 0
+
+    0 $accept: . program $end
+
+    $default  reduce using rule 1 (program)
+
+    program  go to state 1
+
+
+State 1
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 2
+
+
+State 2
+
+    0 $accept: program $end .
+
+    $default  accept
