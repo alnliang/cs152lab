@@ -65,7 +65,7 @@ Functions: Function Functions
 ;
 
 Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
-{printf("Function -> FUNC IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
+{printf("Function -> FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
 ;
 
 Parameter: INTEGER IDENTIFIER
@@ -94,12 +94,12 @@ Statements: Statement SEMICOLON Statements
 
 Statement: Var EQUALS Expression
 {printf("Statement -> Var EQUALS Expression");}
-    | IF RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY ElseStatement
-    {printf("Statement -> IF RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY\n");}
-    | WHILE RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY
-    {printf("Statement -> WHILE RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY\n");}
-    | FOR RGTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression
-    {printf("Statement -> FOR RGTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression\n");}
+    | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement
+    {printf("Statement -> IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement\n");}
+    | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
+    {printf("Statement -> WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
+    | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
+    {printf("Statement -> FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
     | READ Vars
     {printf("Statement -> READ Vars\n");}
     | PRINT Vars
@@ -112,8 +112,8 @@ Statement: Var EQUALS Expression
 
 ElseStatement: %empty
 {printf("ElseStatement -> epsilon\n");}
-    | ELSE RIGHTCURLY Statements LEFTCURLY
-    {printf("ElseStatement -> ELSE RIGHTCURLY Statements LEFTCURLY\n");}
+    | ELSE LEFTCURLY Statements RIGHTCURLY
+    {printf("ElseStatement -> ELSE LEFTCURLY Statements RIGHTCURLY\n");}
 ;
 
 Expression: MultExp
@@ -161,6 +161,8 @@ Vars: Var
 
 TrueFalse: Var EQUALITY Var
 {printf("TrueFalse -> RELATION\n");}
+    | Var NOTEQL Var
+    {printf("TrueFalse -> Var NOTEQL Var\n");}
 ; 
 
 
