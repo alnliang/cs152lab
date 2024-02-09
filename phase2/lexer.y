@@ -167,17 +167,17 @@ Vars: Var
     {printf("Vars -> Var COMMA Vars\n");}
 ;
 
-TrueFalse: Var EQUALITY Var
+TrueFalse: Term EQUALITY Term
 {printf("TrueFalse -> RELATION\n");}
-    | Var NOTEQL Var
+    | Term NOTEQL Term
     {printf("TrueFalse -> Var NOTEQL Var\n");}
-    | Var LESS Var
+    | Term LESS Term
     {printf("TrueFalse -> Var LESS Var\n");}
-    | Var LESSEQL Var
+    | Term LESSEQL Term
     {printf("TrueFalse -> Var LESSEQL Var\n");}
-    | Var GREATER Var
+    | Term GREATER Term
     {printf("TrueFalse -> Var GREATER Var\n");}
-    | Var GREATEREQL Var
+    | Term GREATEREQL Term
     {printf("TrueFalse -> Var GREATER EQL Var\n");}
 ; 
 
