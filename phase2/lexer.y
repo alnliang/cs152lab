@@ -13,7 +13,7 @@ extern int lineCol;
 /* char *identoralpha; "wasn't sure about this type so left it in a comment for now */
 }
 
-%start input
+%start program
 
 %token NUMBER
 %token IDENTIFIER
@@ -47,8 +47,6 @@ extern int lineCol;
 %left EQUALITY
 %left NOTEQL
 
-
-%start program
 
 %%
 program: %empty
@@ -162,6 +160,7 @@ Vars: Var
 
 TrueFalse: RELATION
 {printf("TrueFalse -> RELATION\n");}
-    | 
+; 
 
 %%
+
