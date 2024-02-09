@@ -72,7 +72,7 @@ Parameters: %empty
 ;
 
 FuncBody: %empty
-{printf("FuncBody -> epsilon\n")};
+{printf("FuncBody -> epsilon\n");}
     | Statements
     {printf("FuncBody -> Statements\n");}
 ;
