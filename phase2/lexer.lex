@@ -24,8 +24,8 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 "]" {return RIGHTBRACK; ++lineCol;}
 "," {return COMMA; ++lineCol;}
 "+" {return PLUS; ++lineCol;}
-"-" {return SUBTRACT; ++lineCol;}
-"*" {return MULT; ++lineCol;}
+"-" {return MINUS; ++lineCol;}
+"*" {return TIMES; ++lineCol;}
 "/" {return DIVIDE; ++lineCol;}
 "%" {return MOD; ++lineCol;} 
 "=" {return EQUALS; ++lineCol;}
