@@ -158,7 +158,7 @@ Vars: Var
     {printf("Vars -> Var COMMA Vars\n");}
 ;
 
-TrueFalse: RELATION
+TrueFalse: Var EQUALITY Var
 {printf("TrueFalse -> RELATION\n");}
 ; 
 
