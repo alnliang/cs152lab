@@ -1,4 +1,5 @@
 %{
+#include "y.tab.h"
 #include <stdio.h>
 int lineNum = 1;
 int lineCol = 0;
