@@ -124,12 +124,6 @@ Expression: MultExp
     {printf("Expression -> MultExp MINUS Expression\n");}
 ;
 
-Expressions: Expression COMMA Expressions
-    {printf("Expressions -> Expression COMMA Expressions\n");}
-    | Expression
-    {printf("Expression -> Expression\n");}
-;
-
 MultExp: Term
 {printf("MultExp -> Term\n");}
     | Term TIMES MultExp
@@ -161,7 +155,7 @@ Var: IDENTIFIER LEFTBRACK Expression RIGHTBRACK
 
 Vars: Var
 {printf("Vars -> Var\n");}
-     Var COMMA Vars
+    | Var COMMA Vars
     {printf("Vars -> Var COMMA Vars\n");}
 ;
 
