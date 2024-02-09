@@ -72,9 +72,3 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 
 int yyparse();
 
-main()
-	{
-	yylex();
-	printf("Finished");
-	}
-
