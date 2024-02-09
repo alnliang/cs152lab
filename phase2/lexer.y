@@ -5,6 +5,7 @@ extern int yylex();
 extern int lineNum;
 extern int lineCol;
 /*the reason I used extern int here and didn't directly define it is because it's already defined in another file */
+void yyerror(const char *s);
 %} 
 
 %union {
@@ -162,5 +163,13 @@ TrueFalse: Var EQUALITY Var
 {printf("TrueFalse -> RELATION\n");}
 ; 
 
+
 %%
 
+int main(void){
+    yyparse();
+}
+
+void yyerror(const char *s){
+    printf("Error: %s\n", s);
+}
