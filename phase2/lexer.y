@@ -56,7 +56,7 @@ program: %empty
     {printf("Program -> Function Program\n");}
 ;
 
-Function: FUNCTION IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RIGHTCURLY
+Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN RIGHTCURLY FuncBody LEFTCURLY
 {printf("Function -> FUNC IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
 ;
 
