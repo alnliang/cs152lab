@@ -7,7 +7,7 @@ func main() {
 	b = 50;
 	if (a < b) {
     	c = 0;
-	}; else {
+	} else {
     	c = 1;
 	};
 
@@ -18,7 +18,7 @@ func main() {
 	b = 50;
 	if (a >= b) {
     	c = 0;
-	}; else {
+	} else {
     	c = 1;
 	};
 
