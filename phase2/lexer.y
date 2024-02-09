@@ -75,7 +75,7 @@ Parameter: INTEGER IDENTIFIER
 Parameters: %empty
 {printf("Parameters -> epsilon\n");}
     | Parameters COMMA Parameter
-    {printf("Parameters -> Parameter COMMA Parametersn");}
+    {printf("Parameters -> Parameter COMMA Parameters\n");}
     | Parameter
     {printf("Parameters -> Parameter\n");}
 ;
@@ -94,7 +94,7 @@ Statements: Statement SEMICOLON Statements
 
 Statement: Var EQUALS Expression
 {printf("Statement -> Var EQUALS Expression");}
-    | IF RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY
+    | IF RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY ElseStatement
     {printf("Statement -> IF RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY\n");}
     | WHILE RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY
     {printf("Statement -> WHILE RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY\n");}
