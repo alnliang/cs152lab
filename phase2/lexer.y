@@ -54,13 +54,17 @@ void yyerror(const char *s);
 
 
 %%
-program: %empty
-{printf("Program -> epsilon\n");}
-    | Function program
-    {printf("Program -> Function Program\n");}
+program: Functions
+    {printf("program -> Functions\n");}
 ;
 
-Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN RIGHTCURLY FuncBody LEFTCURLY
+Functions: Function Functions
+    {printf("Functions -> Function Functions\n");}
+    | %empty
+    {printf("Functions -> epsilon\n");}
+;
+
+Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
 {printf("Function -> FUNC IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
 ;
 
