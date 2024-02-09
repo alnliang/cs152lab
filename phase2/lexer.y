@@ -128,7 +128,7 @@ Expression: MultExp
     {printf("Expression -> MultExp PLUS Expression\n");}
     | MultExp MINUS Expression
     {printf("Expression -> MultExp MINUS Expression\n");}
-    | IDENTIFIER LFTPAREN Expression RGTPAREN
+    | IDENTIFIER LFTPAREN Vars RGTPAREN
     {printf("Expression -> IDENTIFIER LFTPAREN Vars RGTPAREN\n");}
 ;
 
@@ -157,6 +157,8 @@ Var: IDENTIFIER LEFTBRACK Expression RIGHTBRACK
 {printf("Var -> IDENTIFIER LEFTBRACK Expression RIGHTBRACK\n");}
     | IDENTIFIER
     {printf("Var -> IDENTIFIER\n");}
+    | Expression
+    {printf("Var -> Expression\n");}
     | LFTPAREN Expression RGTPAREN
     {printf("Var -> LFTPAREN Expression RGTPAREN\n");}
 ;
