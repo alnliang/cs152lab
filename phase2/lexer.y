@@ -37,9 +37,13 @@ void yyerror(const char *s);
 %token FOR 
 
 
-%left PLUS MINUS 
-%left TIMES DIVIDE MOD
-%left LFTPAREN RGTPAREN
+%left PLUS
+%left MINUS 
+%left TIMES
+%left DIVIDE
+%left MOD
+%left LFTPAREN
+%left RGTPAREN
 %left EQUALS
 %left LESS
 %left LESSEQL
