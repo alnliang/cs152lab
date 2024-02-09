@@ -57,7 +57,7 @@ program: %empty
     {printf("Program -> Function Program\n");}
 ;
 
-Function: FUNC IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RIGHTCURLY
+Function: FUNCTION IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RIGHTCURLY
 {printf("Function -> FUNC IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
 ;
 
@@ -71,6 +71,27 @@ Parameters: %empty
     {printf("Parameters -> Parameter COMMA Parameters");}
 ;
 
+FuncBody: %empty
+{printf("FuncBody -> epsilon\n")};
+    | Statements
+    {printf("FuncBody -> Statemets");}
+;
+
+Statements: Statement SEMICOLON Statements
+{printf("Statements -> Statement SEMICOLON Statements\n");}
+    | Statement SEMICOLON
+    {printf("Statements -> Statement SEMICOLON\n");}
+;
+
+Statement: IDENTIFIER EQUALS Expression
+{printf("Statement -> IDENTIFIER EQUALS Expression");}
+    | IF RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY
+    {printf("Statement -> IF RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY\n");}
+    | WHILE RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY
+    {printf("Statement -> WHILE RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY");}
+    | FOR RGTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression
+    {printf("FOR RGTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression");}
+    | 
 
 
 %%
