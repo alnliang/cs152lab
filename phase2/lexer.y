@@ -124,9 +124,7 @@ Expression: MultExp
     {printf("Expression -> MultExp MINUS Expression\n");}
 ;
 
-Expressions: %empty
-{printf("Expressions -> epsilon\n");}
-    | Expression COMMA Expressions
+Expressions: Expression COMMA Expressions
     {printf("Expressions -> Expression COMMA Expressions\n");}
     | Expression
     {printf("Expression -> Expression\n");}
