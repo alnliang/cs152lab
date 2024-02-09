@@ -94,6 +94,8 @@ Statements: Statement SEMICOLON Statements
 
 Statement: Var EQUALS Expression
 {printf("Statement -> Var EQUALS Expression\n");}
+    | Expression
+    {printf("Statement -> Expression");}
     | INTEGER Var
     {printf("Statement -> INTEGER Var\n");}
     | INTEGER Var EQUALS Expression
