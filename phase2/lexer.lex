@@ -14,39 +14,39 @@ INVALID_START ({DIGIT}|"_")+({ALPHA}|{IDENTIFIER})
 INVALID_UNDERSCORE {IDENTIFIER}"_"+
 
 %%
-";" {++lineCol; return SEMICOLON;}
-"(" {++lineCol; return LFTPAREN;}
-")" {++lineCol; return RGTPAREN}
-"{" {++lineCol; return LEFTCURLY;}
-"}" {++lineCol; return RIGHTCURLY;}
-"[" {++lineCol; return LEFTBRACK;}
-"]" {++lineCol; return RIGHTBRACK;}
-"," {++lineCol; return COMMA;}
-"+" {++lineCol; return PLUS;}
-"-" {++lineCol; return SUBTRACT;}
-"*" {++lineCol; return MULT;}
-"/" {++lineCol; return DIVIDE;}
-"%" {++lineCol; return MOD;} 
-"=" {++lineCol; return EQUALS;}
-"<" {++lineCol; return LESS;}
-"<=" {++lineCol; ++lineCol; return LESSEQL;}
-">" {++lineCol; return GREATER;}
-">=" {++lineCol; ++lineCol; return GREATEREQL;}
-"==" {++lineCol; ++lineCol; return EQUALITY;}
-"!=" {++lineCol; ++lineCol; return NOTEQL;}
-"return" {lineCol += 6; return RETURN;}
-"int" {lineCol += 3; return INTEGER;}
-"clog" {lineCol += 4; return PRINT;}
-"cfetch" {lineCol += 6; return READ;}
-"while" {lineCol += 5; return WHILE;}
-"if" {lineCol += 2; return IF;}
-"else" {lineCol += 4; return ELSE;}
-"break" {lineCol += 5; return BREAK;}
-"continue" {lineCol += 8; return CONT;}
-"for" {lineCol += 3; return FOR;}
-"func" {lineCol += 4; return FUNCTION;}
-{IDENTIFIER} {lineCol += yyleng; return IDENTIFIER;}
-{DIGIT}+ {lineCol += yyleng; return NUMBER;}
+";" {return SEMICOLON; ++lineCol;}
+"(" {return LFTPAREN; ++lineCol;}
+")" {return RGTPAREN; ++lineCol;}
+"{" {return LEFTCURLY; ++lineCol;}
+"}" {return RIGHTCURLY; ++lineCol;}
+"[" {return LEFTBRACK; ++lineCol;}
+"]" {return RIGHTBRACK; ++lineCol;}
+"," {return COMMA; ++lineCol;}
+"+" {return PLUS; ++lineCol;}
+"-" {return SUBTRACT; ++lineCol;}
+"*" {return MULT; ++lineCol;}
+"/" {return DIVIDE; ++lineCol;}
+"%" {return MOD; ++lineCol;} 
+"=" {return EQUALS; ++lineCol;}
+"<" {return LESS; ++lineCol;}
+"<=" {return LESSEQL; ++lineCol; ++lineCol;}
+">" {return GREATER; ++lineCol;}
+">=" {return GREATEREQL; ++lineCol; ++lineCol;}
+"==" {return EQUALITY; ++lineCol; ++lineCol;}
+"!=" {return NOTEQL; ++lineCol; ++lineCol;}
+"return" {return RETURN; lineCol += 6;}
+"int" {return INTEGER; lineCol += 3;}
+"clog" {return PRINT; lineCol += 4;}
+"cfetch" {return READ; lineCol += 6;}
+"while" {return WHILE; lineCol += 5;}
+"if" {return IF; lineCol += 2;}
+"else" {return ELSE; lineCol += 4;}
+"break" {return BREAK; lineCol += 5;}
+"continue" {return CONT; lineCol += 8;}
+"for" {return FOR; lineCol += 3;}
+"func" {return FUNCTION; lineCol += 4;}
+{IDENTIFIER} {return IDENTIFIER; lineCol += yyleng;}
+{DIGIT}+ {return NUMBER; lineCol += yyleng;}
 {ALPHA}+ {printf("ALPHA: %s\n", yytext); lineCol += yyleng;}
 {COMMENT} 
 {WHITESPACE}+ {lineCol += yyleng;}
