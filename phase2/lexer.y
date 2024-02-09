@@ -123,13 +123,13 @@ ElseStatement: %empty
 ;
 
 Expression: MultExp
-{printf("Expression -> MultExp");}
+{printf("Expression -> MultExp\n");}
     | MultExp PLUS Expression
     {printf("Expression -> MultExp PLUS Expression\n");}
     | MultExp MINUS Expression
     {printf("Expression -> MultExp MINUS Expression\n");}
     | IDENTIFIER LFTPAREN Vars RGTPAREN
-    {printf("Expression -> IDENTIFIER LFTPAREN Vars RGTPAREN");}
+    {printf("Expression -> IDENTIFIER LFTPAREN Vars RGTPAREN\n");}
 ;
 
 MultExp: Term
