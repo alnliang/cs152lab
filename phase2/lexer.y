@@ -122,13 +122,20 @@ ElseStatement: %empty
     {printf("ElseStatement -> ELSE LEFTCURLY Statements RIGHTCURLY\n");}
 ;
 
+Expressions: %empty
+{printf("Expressions -> epsilon\n");}
+    | Expression COMMA Expressions
+    {printf("Expressions -> Expression COMMA Expressions\n");}
+    | Expression
+    {printf("Expressions -> Expression\n");}
+
 Expression: MultExp
 {printf("Expression -> MultExp\n");}
     | MultExp PLUS Expression
     {printf("Expression -> MultExp PLUS Expression\n");}
     | MultExp MINUS Expression
     {printf("Expression -> MultExp MINUS Expression\n");}
-    | IDENTIFIER LFTPAREN Vars RGTPAREN
+    | IDENTIFIER LFTPAREN Expressions RGTPAREN
     {printf("Expression -> IDENTIFIER LFTPAREN Vars RGTPAREN\n");}
 ;
 
@@ -157,8 +164,6 @@ Var: IDENTIFIER LEFTBRACK Expression RIGHTBRACK
 {printf("Var -> IDENTIFIER LEFTBRACK Expression RIGHTBRACK\n");}
     | IDENTIFIER
     {printf("Var -> IDENTIFIER\n");}
-    | Expression
-    {printf("Var -> Expression\n");}
     | LFTPAREN Expression RGTPAREN
     {printf("Var -> LFTPAREN Expression RGTPAREN\n");}
 ;
