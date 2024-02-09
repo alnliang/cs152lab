@@ -93,7 +93,7 @@ Statements: Statement SEMICOLON Statements
 ;
 
 Statement: Var EQUALS Expression
-{printf("Statement -> Var EQUALS Expression");}
+{printf("Statement -> Var EQUALS Expression\n");}
     | INTEGER Var
     {printf("Statement -> INTEGER Var\n");}
     | INTEGER Var EQUALS Expression
@@ -150,8 +150,6 @@ Term: Var
     {printf("Term -> NUMBER\n");}
     | MINUS NUMBER
     {printf("Term -> MINUS NUMBER\n");}
-    | LFTPAREN Expression RGTPAREN
-    {printf("Term -> LFTPAREN Expression RGTPAREN\n");}
 ;
 
 
@@ -159,6 +157,8 @@ Var: IDENTIFIER LEFTBRACK Expression RIGHTBRACK
 {printf("Var -> IDENTIFIER LEFTBRACK Expression RIGHTBRACK\n");}
     | IDENTIFIER
     {printf("Var -> IDENTIFIER\n");}
+    | LFTPAREN Expression RGTPAREN
+    {printf("Var -> LFTPAREN Expression RGTPAREN\n");}
 ;
 
 Vars: Var
