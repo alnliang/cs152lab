@@ -61,20 +61,22 @@ Function: FUNCTION IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RI
 {printf("Function -> FUNC IDENTIFIER RGTPAREN Parameters LFTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
 ;
 
-Parameter: IDENTIFIER COMMA INTEGER
-{printf("Parameter -> IDENTIFIER COMMA INTEGER\n");}
+Parameter: INTEGER IDENTIFIER
+{printf("Parameter -> INTEGER IDENTIFIER\n");}
 ;
 
 Parameters: %empty
 {printf("Parameters -> epsilon\n");}
     | Parameter COMMA Parameters
-    {printf("Parameters -> Parameter COMMA Parameters");}
+    {printf("Parameters -> Parameter COMMA Parametersn");}
+    | Parameter
+    {printf("Parameters -> Parameter\n");}
 ;
 
 FuncBody: %empty
 {printf("FuncBody -> epsilon\n")};
     | Statements
-    {printf("FuncBody -> Statements");}
+    {printf("FuncBody -> Statements\n");}
 ;
 
 Statements: Statement SEMICOLON Statements
@@ -83,15 +85,83 @@ Statements: Statement SEMICOLON Statements
     {printf("Statements -> Statement SEMICOLON\n");}
 ;
 
-Statement: IDENTIFIER EQUALS Expression
-{printf("Statement -> IDENTIFIER EQUALS Expression");}
+Statement: Var EQUALS Expression
+{printf("Statement -> Var EQUALS Expression");}
     | IF RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY
     {printf("Statement -> IF RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY\n");}
     | WHILE RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY
-    {printf("Statement -> WHILE RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY");}
+    {printf("Statement -> WHILE RGTPAREN TrueFalse LFTPAREN RIGHTCURLY FuncBody LEFTCURLY\n");}
     | FOR RGTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression
-    {printf("FOR RGTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression");}
-    | 
+    {printf("Statement -> FOR RGTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression\n");}
+    | READ Vars
+    {printf("Statement -> READ Vars\n");}
+    | PRINT Vars
+    {printf("Statement -> PRINT Vars\n");}
+    | CONT
+    {printf("Statement -> CONT\n");}
+    | RETURN Expression
+    {printf("Statement -> RETURN Expression\n");}
+;
 
+ElseStatement: %empty
+{printf("ElseStatement -> epsilon\n");}
+    | ELSE RIGHTCURLY Statements LEFTCURLY
+    {printf("ElseStatement -> ELSE RIGHTCURLY Statements LEFTCURLY\n");}
+;
+
+Expression: MultExp
+{printf("Expression -> MultExp");}
+    | MultExp PLUS Expression
+    {printf("Expression -> MultExp PLUS Expression\n");}
+    | MultExp MINUS Expression
+    {printf("Expression -> MultExp MINUS Expression\n");}
+;
+
+Expressions: %empty
+{printf("Expressions -> epsilon\n");}
+    | Expression COMMA Expressions
+    {printf("Expressions -> Expression COMMA Expressions\n");}
+    | Expression
+    {printf("Expression -> Expression\n");}
+;
+
+MultExp: Term
+{printf("MultExp -> Term\n");}
+    | Term TIMES MultExp
+    {printf("MultExp -> Term TIMES MultExp\n");}
+    | Term DIVIDE MultExp
+    {printf("MultExp -> Term DIVIDE MultExp\n");}
+    | Term MOD MultExp
+    {printf("MultExp -> Term MOD MultExp\n");}
+;
+
+Term: Var
+{printf("Term -> IDENTIFIER\n");}
+    | MINUS Var
+    {printf("Term -> MINUS Var\n");}
+    | NUMBER
+    {printf("Term -> NUMBER\n");}
+    | MINUS NUMBER
+    {printf("Term -> MINUS NUMBER\n");}
+    | LFTPAREN Expression RGTPAREN
+    {printf("Term -> LFTPAREN Expression RGTPAREN\n");}
+;
+
+
+Var: IDENTIFIER LEFTBRACK Expression RIGHTBRACK
+{printf("Var -> IDENTIFIER LEFTBRACK Expression RIGHTBRACK\n");}
+    | IDENTIFIER
+    {printf("Var -> IDENTIFIER\n");}
+;
+
+Vars: Var
+{printf("Vars -> Var\n");}
+     Var COMMA Vars
+    {printf("Vars -> Var COMMA Vars\n");}
+;
+
+TrueFalse: RELATION
+{printf("TrueFalse -> RELATION\n");}
+    | 
 
 %%
