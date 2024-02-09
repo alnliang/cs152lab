@@ -74,7 +74,7 @@ Parameters: %empty
 FuncBody: %empty
 {printf("FuncBody -> epsilon\n")};
     | Statements
-    {printf("FuncBody -> Statemets");}
+    {printf("FuncBody -> Statements");}
 ;
 
 Statements: Statement SEMICOLON Statements
