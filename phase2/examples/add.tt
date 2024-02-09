@@ -7,4 +7,3 @@ func main(){
   c = a + b;
   clog(c);
 }
-

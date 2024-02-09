@@ -974,7 +974,7 @@ YY_RULE_SETUP
 case 34:
 YY_RULE_SETUP
 #line 51 "lexer.lex"
-{printf("ALPHA: %s\n", yytext); lineCol += yyleng;}
+{return IDENTIFIER; lineCol += yyleng;}
 	YY_BREAK
 case 35:
 /* rule 35 can match eol */
@@ -2021,10 +2021,6 @@ void yyfree (void * ptr )
 
 
 
-main()
-	{
-	yylex();
-	printf("Finished");
-	}
+int yyparse();
 
 
