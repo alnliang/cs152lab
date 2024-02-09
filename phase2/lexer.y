@@ -166,9 +166,6 @@ TrueFalse: Var EQUALITY Var
 
 %%
 
-int main(void){
-    yyparse();
-}
 
 void yyerror(const char *s){
     printf("Error: %s\n", s);
