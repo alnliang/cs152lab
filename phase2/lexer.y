@@ -94,6 +94,10 @@ Statements: Statement SEMICOLON Statements
 
 Statement: Var EQUALS Expression
 {printf("Statement -> Var EQUALS Expression");}
+    | INTEGER Var
+    {printf("Statement -> INTEGER Var\n");}
+    | INTEGER Var EQUALS Expression
+    {printf("Statement -> INTEGER Var EQUALS Expression");}
     | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement
     {printf("Statement -> IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement\n");}
     | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
@@ -108,6 +112,8 @@ Statement: Var EQUALS Expression
     {printf("Statement -> CONT\n");}
     | RETURN Expression
     {printf("Statement -> RETURN Expression\n");}
+    | BREAK
+    {printf("Statement -> BREAK\n");}
 ;
 
 ElseStatement: %empty
@@ -122,6 +128,8 @@ Expression: MultExp
     {printf("Expression -> MultExp PLUS Expression\n");}
     | MultExp MINUS Expression
     {printf("Expression -> MultExp MINUS Expression\n");}
+    | IDENTIFIER LFTPAREN Vars RGTPAREN
+    {printf("Expression -> IDENTIFIER LFTPAREN Vars RGTPAREN");}
 ;
 
 MultExp: Term
@@ -163,6 +171,14 @@ TrueFalse: Var EQUALITY Var
 {printf("TrueFalse -> RELATION\n");}
     | Var NOTEQL Var
     {printf("TrueFalse -> Var NOTEQL Var\n");}
+    | Var LESS Var
+    {printf("TrueFalse -> Var LESS Var\n");}
+    | Var LESSEQL Var
+    {printf("TrueFalse -> Var LESSEQL Var\n");}
+    | Var GREATER Var
+    {printf("TrueFalse -> Var GREATER Var\n");}
+    | Var GREATEREQL Var
+    {printf("TrueFalse -> Var GREATER EQL Var\n");}
 ; 
 
 
