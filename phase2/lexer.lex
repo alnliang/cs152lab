@@ -48,7 +48,7 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 "func" {return FUNCTION; lineCol += 4;}
 {IDENTIFIER} {return IDENTIFIER; lineCol += yyleng;}
 {DIGIT}+ {return NUMBER; lineCol += yyleng;}
-{ALPHA}+ {printf("ALPHA: %s\n", yytext); lineCol += yyleng;}
+{ALPHA}+ {return IDENTIFIER; lineCol += yyleng;}
 {COMMENT} 
 {WHITESPACE}+ {lineCol += yyleng;}
 {NEWLINE} {++lineNum;}

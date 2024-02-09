@@ -74,7 +74,7 @@ Parameter: INTEGER IDENTIFIER
 
 Parameters: %empty
 {printf("Parameters -> epsilon\n");}
-    | Parameter COMMA Parameters
+    | Parameters COMMA Parameter
     {printf("Parameters -> Parameter COMMA Parametersn");}
     | Parameter
     {printf("Parameters -> Parameter\n");}
