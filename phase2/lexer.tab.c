@@ -65,10 +65,10 @@
 #line 1 "lexer.y" /* yacc.c:339  */
 
 
-#include <stdio.h>
-
+#include <stdlib.h>
 int yylex();
 void yyerror(const char *s);
+
 
 #line 74 "lexer.tab.c" /* yacc.c:339  */
 
@@ -105,23 +105,41 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    IDENT = 258,
-    NUMBER = 259,
-    FUNC = 260,
-    MAINFUNC = 261,
-    SEMICOLON = 262,
-    COMMA = 263,
-    LEFTCURLY = 264,
-    RIGHTCURLY = 265,
-    LEFTBRACK = 266,
-    RIGHTBRACK = 267,
-    PLUS = 268,
-    MINUS = 269,
-    TIMES = 270,
-    DIVIDE = 271,
-    MOD = 272,
-    LFTPAREN = 273,
-    RGTPAREN = 274
+    NUMBER = 258,
+    IDENTIFIER = 259,
+    FUNCTION = 260,
+    SEMICOLON = 261,
+    LEFTCURLY = 262,
+    RIGHTCURLY = 263,
+    LEFTBRACK = 264,
+    RIGHTBRACK = 265,
+    COMMA = 266,
+    RETURN = 267,
+    INTEGER = 268,
+    PRINT = 269,
+    READ = 270,
+    WHILE = 271,
+    IF = 272,
+    ELSE = 273,
+    BREAK = 274,
+    CONT = 275,
+    FOR = 276,
+    MAINFUNC = 277,
+    ALPHA = 278,
+    PLUS = 279,
+    MINUS = 280,
+    TIMES = 281,
+    DIVIDE = 282,
+    MOD = 283,
+    LFTPAREN = 284,
+    RGTPAREN = 285,
+    EQUALS = 286,
+    LESS = 287,
+    LESSEQL = 288,
+    GREATER = 289,
+    GREATEREQL = 290,
+    EQUALITY = 291,
+    NOTEQL = 292
   };
 #endif
 
@@ -141,7 +159,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 145 "lexer.tab.c" /* yacc.c:358  */
+#line 163 "lexer.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -386,7 +404,7 @@ union yyalloc
 #define YYLAST   0
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  20
+#define YYNTOKENS  38
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  2
 /* YYNRULES -- Number of rules.  */
@@ -397,7 +415,7 @@ union yyalloc
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   274
+#define YYMAXUTOK   292
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -433,14 +451,16 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    29,    29
+       0,    49,    49
 };
 #endif
 
@@ -449,10 +469,12 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "IDENT", "NUMBER", "FUNC", "MAINFUNC",
-  "SEMICOLON", "COMMA", "LEFTCURLY", "RIGHTCURLY", "LEFTBRACK",
-  "RIGHTBRACK", "PLUS", "MINUS", "TIMES", "DIVIDE", "MOD", "LFTPAREN",
-  "RGTPAREN", "$accept", "program", YY_NULLPTR
+  "$end", "error", "$undefined", "NUMBER", "IDENTIFIER", "FUNCTION",
+  "SEMICOLON", "LEFTCURLY", "RIGHTCURLY", "LEFTBRACK", "RIGHTBRACK",
+  "COMMA", "RETURN", "INTEGER", "PRINT", "READ", "WHILE", "IF", "ELSE",
+  "BREAK", "CONT", "FOR", "MAINFUNC", "ALPHA", "PLUS", "MINUS", "TIMES",
+  "DIVIDE", "MOD", "LFTPAREN", "RGTPAREN", "EQUALS", "LESS", "LESSEQL",
+  "GREATER", "GREATEREQL", "EQUALITY", "NOTEQL", "$accept", "program", YY_NULLPTR
 };
 #endif
 
@@ -462,7 +484,9 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,   274
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285,   286,   287,   288,   289,   290,   291,   292
 };
 # endif
 
@@ -520,13 +544,13 @@ static const yytype_uint8 yycheck[] =
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    21,     0
+       0,    39,     0
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    20,    21
+       0,    38,    39
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -1209,7 +1233,7 @@ yyreduce:
   switch (yyn)
     {
       
-#line 1213 "lexer.tab.c" /* yacc.c:1646  */
+#line 1237 "lexer.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1437,7 +1461,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 30 "lexer.y" /* yacc.c:1906  */
+#line 50 "lexer.y" /* yacc.c:1906  */
 
 
 int main(void) {

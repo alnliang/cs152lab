@@ -33,30 +33,29 @@ MAINFUNCNOPARAM ("func ")"main("(" ")*")"
 "*" { return TIMES; }
 "/" { return DIVIDE; }
 "%" { return MOD; } 
-"=" {printf("EQUALS\n"); ++lineCol;}
-"<" {printf("Less\n"); ++lineCol;}
-"<=" {printf("LessEql\n"); ++lineCol; ++lineCol;}
-">" {printf("Greater\n"); ++lineCol;}
-">=" {printf("GreaterEql\n"); ++lineCol; ++lineCol;}
-"==" {printf("Equality\n"); ++lineCol; ++lineCol;}
-"!=" {printf("NotEql\n"); ++lineCol; ++lineCol;}
-"return" {printf("RETURN\n"); lineCol += 6;}
-"int" {printf("INTEGER\n"); lineCol += 3;}
-"clog" {printf("PRINT\n"); lineCol += 4;}
-"cfetch" {printf("READ\n"); lineCol += 6;}
-"while" {printf("WHILE\n"); lineCol += 5;}
-"if" {printf("IF\n"); lineCol += 2;}
-"else" {printf("ELSE\n"); lineCol += 4;}
-"break" {printf("BREAK\n"); lineCol += 5;}
-"continue" {printf("CONT\n"); lineCol += 8;}
-"for" {printf("FOR LOOP\n"); lineCol += 3;}
-{IDENTIFIER} { return IDENT; }
+"=" { return EQUALS; }
+"<" { return LESS; }
+"<=" { return LESSEQL; }
+">" { return GREATER; }
+">=" { return GREATEREQL; }
+"==" { return EQUALITY; }
+"!=" { return NOTEQL; }
+"return" { return RETURN; }
+"int" { return INTEGER; }
+"clog" { return PRINT; }
+"cfetch" { return READ; }
+"while" { return WHILE; }
+"if" { return IF; }
+"else" { return ELSE; }
+"break" { return BREAK; }
+"continue" { return CONT; }
+"for" { return FOR; }
+{IDENTIFIER} { return IDENTIFIER; }
 {DIGIT}+ { return NUMBER; }
-{ALPHA}+ {printf("ALPHA: %s\n", yytext); lineCol += yyleng;}
+{ALPHA}+ { return ALPHA; }
 {MAINFUNC} { return MAINFUNC; }
-{MAINFUNCNOPARAM} {printf("MAIN FUNCTION\n"); lineCol += yyleng;}
-{FUNC} { return FUNC; }
-{FUNCPARAM} {printf("FUNCTION\n"); lineCol += yyleng;}
+
+{FUNC} { return FUNCTION; }
 {COMMENT} 
 {WHITESPACE}+ {lineCol += yyleng;}
 {NEWLINE} {++lineNum;}

@@ -1,32 +1,52 @@
 %{
 
-#include <stdio.h>
-
+#include <stdlib.h>
 int yylex();
 void yyerror(const char *s);
+
 %}
 
 
-%token IDENT
 %token NUMBER
-%token FUNC
-%token MAINFUNC
+%token IDENTIFIER
+%token FUNCTION
 %token SEMICOLON
-%token COMMA
 %token LEFTCURLY
 %token RIGHTCURLY
 %token LEFTBRACK
 %token RIGHTBRACK
-%left PLUS MINUS
+%token COMMA
+%token RETURN
+%token INTEGER
+%token PRINT 
+%token READ
+%token WHILE
+%token IF 
+%token ELSE
+%token BREAK
+%token CONT 
+%token FOR 
+%token MAINFUNC
+%token ALPHA
+
+
+%left PLUS MINUS 
 %left TIMES DIVIDE MOD
 %left LFTPAREN RGTPAREN
+%left EQUALS
+%left LESS
+%left LESSEQL
+%left GREATER
+%left GREATEREQL
+%left EQUALITY
+%left NOTEQL
 
 
 
 %start program
 
 %%
-program: %empty
+program: %empty;
 %%
 
 int main(void) {
