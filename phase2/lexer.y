@@ -94,8 +94,6 @@ Statements: Statement SEMICOLON Statements
 
 Statement: Var EQUALS Expression
 {printf("Statement -> Var EQUALS Expression\n");}
-    | Expression
-    {printf("Statement -> Expression");}
     | INTEGER Var
     {printf("Statement -> INTEGER Var\n");}
     | INTEGER Var EQUALS Expression
@@ -130,7 +128,7 @@ Expression: MultExp
     {printf("Expression -> MultExp PLUS Expression\n");}
     | MultExp MINUS Expression
     {printf("Expression -> MultExp MINUS Expression\n");}
-    | IDENTIFIER LFTPAREN Vars RGTPAREN
+    | IDENTIFIER LFTPAREN Expression RGTPAREN
     {printf("Expression -> IDENTIFIER LFTPAREN Vars RGTPAREN\n");}
 ;
 
