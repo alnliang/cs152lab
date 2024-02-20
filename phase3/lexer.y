@@ -63,17 +63,33 @@ void yyerror(const char *s);
 
 %%
 program: Functions
-    {}
+    {
+        struct CodeNode *node = $1;
+        printf("%s\n", node->code.c_str()); 
+    }
 ;
 
 Functions: Function Functions
-    {}
+    {
+        struct CodeNode *function = $1;
+        struct CodeNode *functions = $2;
+        struct CodeNode *node = new CodeNode;
+        node->code = function->code + functions->code;
+        $$ = node;
+    }
     | %empty
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        $$ = node;
+    }
 ;
 
 Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
-{}
+{
+    struct CodeNode * node = new CodeNode;
+    node->code += std::string("func ") + $2 + std::string("\n");
+    $$ = node;
+}
 ;
 
 Parameter: INTEGER IDENTIFIER
