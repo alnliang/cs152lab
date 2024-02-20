@@ -1,6 +1,11 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
+struct CodeNode {
+    std::string code;
+    std::string name;
+};
 extern int yylex();
 extern int lineNum;
 extern int lineCol;
@@ -12,6 +17,7 @@ void yyerror(const char *s);
  char *id;
  float num;
 /* char *identoralpha; "wasn't sure about this type so left it in a comment for now */
+ struct CodeNode *codenode;
 }
 
 %start program
@@ -52,140 +58,142 @@ void yyerror(const char *s);
 %left EQUALITY
 %left NOTEQL
 
+%type <codenode> Functions
+%type <codenode> Function
 
 %%
 program: Functions
-    {printf("program -> Functions\n");}
+    {}
 ;
 
 Functions: Function Functions
-    {printf("Functions -> Function Functions\n");}
+    {}
     | %empty
-    {printf("Functions -> epsilon\n");}
+    {}
 ;
 
 Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
-{printf("Function -> FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
+{}
 ;
 
 Parameter: INTEGER IDENTIFIER
-{printf("Parameter -> INTEGER IDENTIFIER\n");}
+{}
 ;
 
 Parameters: %empty
-{printf("Parameters -> epsilon\n");}
+{}
     | Parameters COMMA Parameter
-    {printf("Parameters -> Parameter COMMA Parameters\n");}
+    {}
     | Parameter
-    {printf("Parameters -> Parameter\n");}
+    {}
 ;
 
 FuncBody: %empty
-{printf("FuncBody -> epsilon\n");}
+{}
     | Statements
-    {printf("FuncBody -> Statements\n");}
+    {}
 ;
 
 Statements: Statement SEMICOLON Statements
-{printf("Statements -> Statement SEMICOLON Statements\n");}
+{}
     | Statement SEMICOLON
-    {printf("Statements -> Statement SEMICOLON\n");}
+    {}
 ;
 
 Statement: Var EQUALS Expression
-{printf("Statement -> Var EQUALS Expression\n");}
+{}
     | INTEGER Var
-    {printf("Statement -> INTEGER Var\n");}
+    {}
     | INTEGER Var EQUALS Expression
-    {printf("Statement -> INTEGER Var EQUALS Expression");}
+    {}
     | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement
-    {printf("Statement -> IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement\n");}
+    {}
     | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
-    {printf("Statement -> WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
+    {}
     | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
-    {printf("Statement -> FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY\n");}
+    {}
     | READ Vars
-    {printf("Statement -> READ Vars\n");}
+    {}
     | PRINT Vars
-    {printf("Statement -> PRINT Vars\n");}
+    {}
     | CONT
-    {printf("Statement -> CONT\n");}
+    {}
     | RETURN Expression
-    {printf("Statement -> RETURN Expression\n");}
+    {}
     | BREAK
-    {printf("Statement -> BREAK\n");}
+    {}
 ;
 
 ElseStatement: %empty
-{printf("ElseStatement -> epsilon\n");}
+{}
     | ELSE LEFTCURLY Statements RIGHTCURLY
-    {printf("ElseStatement -> ELSE LEFTCURLY Statements RIGHTCURLY\n");}
+    {}
 ;
 
 Expressions: %empty
-{printf("Expressions -> epsilon\n");}
+{}
     | Expression COMMA Expressions
-    {printf("Expressions -> Expression COMMA Expressions\n");}
+    {}
     | Expression
-    {printf("Expressions -> Expression\n");}
+    {}
 
 Expression: MultExp
-{printf("Expression -> MultExp\n");}
+{}
     | MultExp PLUS Expression
-    {printf("Expression -> MultExp PLUS Expression\n");}
+    {}
     | MultExp MINUS Expression
-    {printf("Expression -> MultExp MINUS Expression\n");}
+    {}
     | IDENTIFIER LFTPAREN Expressions RGTPAREN
-    {printf("Expression -> IDENTIFIER LFTPAREN Vars RGTPAREN\n");}
+    {}
 ;
 
 MultExp: Term
-{printf("MultExp -> Term\n");}
+{}
     | Term TIMES MultExp
-    {printf("MultExp -> Term TIMES MultExp\n");}
+    {}
     | Term DIVIDE MultExp
-    {printf("MultExp -> Term DIVIDE MultExp\n");}
+    {}
     | Term MOD MultExp
-    {printf("MultExp -> Term MOD MultExp\n");}
+    {}
 ;
 
 Term: Var
-{printf("Term -> IDENTIFIER\n");}
+{}
     | MINUS Var
-    {printf("Term -> MINUS Var\n");}
+    {}
     | NUMBER
-    {printf("Term -> NUMBER\n");}
+    {}
     | MINUS NUMBER
-    {printf("Term -> MINUS NUMBER\n");}
+    {}
 ;
 
 
 Var: IDENTIFIER LEFTBRACK Expression RIGHTBRACK
-{printf("Var -> IDENTIFIER LEFTBRACK Expression RIGHTBRACK\n");}
+{}
     | IDENTIFIER
-    {printf("Var -> IDENTIFIER\n");}
+    {}
     | LFTPAREN Expression RGTPAREN
-    {printf("Var -> LFTPAREN Expression RGTPAREN\n");}
+    {}
 ;
 
 Vars: Var
-{printf("Vars -> Var\n");}
+{}
     | Var COMMA Vars
-    {printf("Vars -> Var COMMA Vars\n");}
+    {}
 ;
 
 TrueFalse: Term EQUALITY Term
-{printf("TrueFalse -> RELATION\n");}
+{}
     | Term NOTEQL Term
-    {printf("TrueFalse -> Var NOTEQL Var\n");}
+    {}
     | Term LESS Term
-    {printf("TrueFalse -> Var LESS Var\n");}
+    {}
     | Term LESSEQL Term
-    {printf("TrueFalse -> Var LESSEQL Var\n");}
+    {}
     | Term GREATER Term
-    {printf("TrueFalse -> Var GREATER Var\n");}
+    {}
     | Term GREATEREQL Term
-    {printf("TrueFalse -> Var GREATER EQL Var\n");}
+    {}
 ; 
 
 
