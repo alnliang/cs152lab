@@ -16,6 +16,7 @@ void yyerror(const char *s);
 %union {
  char *id;
  float num;
+ char *op_value;
 /* char *identoralpha; "wasn't sure about this type so left it in a comment for now */
  struct CodeNode *codenode;
 }
@@ -23,7 +24,7 @@ void yyerror(const char *s);
 %start program
 
 %token NUMBER
-%token IDENTIFIER
+%token <id> IDENTIFIER
 %token FUNCTION
 %token SEMICOLON
 %token LEFTCURLY
