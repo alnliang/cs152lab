@@ -88,9 +88,8 @@ Functions: Function Functions
 
 Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
 {
-    std::string ident = $2;
     struct CodeNode *node = new CodeNode;
-    node->code += std::string("func ") + ident + std::string("\n");
+    node->code += std::string("func ") + std::string($2) + std::string("\n");
     node->code += std::string("endfunc\n");
     $$ = node;
 }
