@@ -46,7 +46,7 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 "continue" {return CONT; lineCol += 8;}
 "for" {return FOR; lineCol += 3;}
 "func" {return FUNCTION; lineCol += 4;}
-{IDENTIFIER} {return IDENTIFIER; lineCol += yyleng;}
+{IDENTIFIER} {yylval.op_value = create_string(yytext, yyleng); return IDENTIFIER; lineCol += yyleng;}
 {DIGIT}+ {return NUMBER; lineCol += yyleng;}
 {ALPHA}+ {return IDENTIFIER; lineCol += yyleng;}
 {COMMENT} 
