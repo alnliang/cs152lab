@@ -1,5 +1,5 @@
 %{
-#include "y.tab.h"
+#include "lexer.tab.h"
 #include <stdio.h>
 int lineNum = 1;
 int lineCol = 0;
