@@ -1,2 +1,17 @@
 .DS_Store
 phase3/lex.yy.c
+phase3/lexer.tab.h
+phase3/lexer.tab.c
+phase3/lexer.output
+phase3/a.out
+phase2/a.out
+phase2/y.tab.h
+phase2/y.tab.c
+phase2/y.output
+phase2/lex.yy.c
+phase2/lexer.tab.h
+phase2/lexer.tab.c
+phase2/lexer.output
+phase2/lexer.y
+phase2/lexer.lex
+phase2/parser
