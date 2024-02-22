@@ -14,7 +14,7 @@ void yyerror(const char *s);
 %} 
 
 %union {
- char *id;
+ std::string id;
  float num;
  char *op_value;
 /* char *identoralpha; "wasn't sure about this type so left it in a comment for now */
