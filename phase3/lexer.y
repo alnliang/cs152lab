@@ -62,6 +62,13 @@ void yyerror(const char *s);
 
 %type <codenode> Functions
 %type <codenode> Function
+%type <codenode> Parameters
+%type <codenode> Statements
+%type <codenode> Statement
+%type <codenode> Vars
+%type <codenode> Var
+%type <codenode> ParamCall
+%type <codenode> ParamCalls
 
 %%
 program: Functions
@@ -90,19 +97,29 @@ Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RI
 {
     struct CodeNode *node = new CodeNode;
     node->code += std::string("func ") + std::string($2) + std::string("\n");
+
     node->code += std::string("endfunc\n");
     $$ = node;
 }
 ;
 
 Parameter: INTEGER IDENTIFIER
-{}
+{
+    struct CodeNode *node = new CodeNode;
+    node->code += std::string(".") + std::string($2);
+}
 ;
 
 Parameters: %empty
-{}
+{
+    struct CodeNode *node = new CodeNode;
+    $$ = node;
+}
     | Parameters COMMA Parameter
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+
+    }
     | Parameter
     {}
 ;
@@ -114,13 +131,30 @@ FuncBody: %empty
 ;
 
 Statements: Statement SEMICOLON Statements
-{}
+{
+    struct CodeNode *statement = $1;
+    struct CodeNode *statements = $3;
+    struct CodeNode *node = new CodeNode;
+    node->code = (statement->code) + std::string("\n") + (statements->code);
+    node = $$;
+}
     | Statement SEMICOLON
-    {}
+    {
+        struct CodeNode *statement = $1;
+        struct CodeNode *node = new CodeNode;
+        node->code = (statement->code) + std::string("\n");
+        node = $$;
+    }
 ;
 
 Statement: Var EQUALS Expression
-{}
+{
+
+}
+    | VarArray EQUALS Expression
+    {}
+    | INTEGER VarArray
+    {}
     | INTEGER Var
     {}
     | INTEGER Var EQUALS Expression
@@ -131,9 +165,9 @@ Statement: Var EQUALS Expression
     {}
     | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
     {}
-    | READ Vars
+    | READ Var
     {}
-    | PRINT Vars
+    | PRINT Var
     {}
     | CONT
     {}
@@ -162,8 +196,35 @@ Expression: MultExp
     {}
     | MultExp MINUS Expression
     {}
-    | IDENTIFIER LFTPAREN Expressions RGTPAREN
-    {}
+;
+
+FuncCall: IDENTIFIER LFTPAREN ParamCall RGTPAREN
+{
+
+}
+;
+
+ParamCalls: ParamCall COMMA ParamCalls
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *ParamCall = $1;
+    struct CodeNode *ParamCalls = $3;
+    node->code = ParamCall->code + ParamCalls->code;
+    $$ = node;
+} | %empty
+    {
+        struct CodeNode *node = new CodeNode;
+        $$ = node;
+    }
+;
+
+ParamCall: Var
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *var = $1;
+    node->code = std::string("param ") + var->code + std::string("\n");
+    $$ = node;
+}
 ;
 
 MultExp: Term
@@ -187,18 +248,41 @@ Term: Var
 ;
 
 
-Var: IDENTIFIER LEFTBRACK Expression RIGHTBRACK
-{}
-    | IDENTIFIER
-    {}
+Var: IDENTIFIER
+{
+    struct CodeNode *node = new CodeNode;
+    node->code = std::string($1);
+    $$ = node;
+}
     | LFTPAREN Expression RGTPAREN
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression = $2;
+        node->code = expression->code;
+        $$ = node;
+    }
 ;
 
 Vars: Var
-{}
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *var = $1;
+    node->code = var->code;
+    $$ = node;
+}
     | Var COMMA Vars
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *var = $1;
+        struct CodeNode *vars = $3;
+        node->code
+    }
+;
+
+VarArray: IDENTIFIER LEFTBRACK Var RIGHTBRACK
+{
+    
+}
 ;
 
 TrueFalse: Term EQUALITY Term
