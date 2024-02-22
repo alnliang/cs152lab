@@ -3,6 +3,13 @@
 #include <stdio.h>
 int lineNum = 1;
 int lineCol = 0;
+
+char *create_string(char *text, int len) {
+  char *string_value = new char[len + 1];
+  strcpy(string_value, text);
+  return string_value;
+}
+
 %}
 
 DIGIT [0-9]
