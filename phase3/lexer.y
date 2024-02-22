@@ -66,7 +66,7 @@ void yyerror(const char *s);
 program: Functions
     {
         struct CodeNode *node = $1;
-        printf("%s\n", node->code.c_str()); 
+        printf("%s\n", node->code); 
     }
 ;
 
