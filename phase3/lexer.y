@@ -23,7 +23,7 @@ void yyerror(const char *s);
 
 %start program
 
-%token NUMBER
+%token <id> NUMBER
 %token <id> IDENTIFIER
 %token FUNCTION
 %token SEMICOLON
@@ -89,6 +89,7 @@ Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RI
 {
     struct CodeNode *node = new CodeNode;
     node->code += std::string("func ") + std::string($2) + std::string("\n");
+    node->code += std::string("endfunc\n");
     $$ = node;
 }
 ;
