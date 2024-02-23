@@ -97,7 +97,8 @@ Functions: Function Functions
     }
 ;
 
-Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
+Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY //FuncBody 
+RIGHTCURLY
 {
     struct CodeNode *node = new CodeNode;
     node->code += std::string("func ") + std::string($2) + std::string("\n");
@@ -150,7 +151,7 @@ Parameters: %empty
     }
 ;
 
-FuncBody: %empty
+/* FuncBody: %empty
 {
     struct CodeNode *node = new CodeNode;
     $$ = node;
@@ -361,4 +362,4 @@ int main(void){
 
 void yyerror(const char *s){
     printf("Error: %s\n", s);
-}
+} */
