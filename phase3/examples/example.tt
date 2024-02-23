@@ -6,7 +6,7 @@ func main(){
 }
 
 func hi(int a, int b){
+    int d = 4 + 6;
     int c;
     c = a + b;
-    int d = 4 + 6;
 }
