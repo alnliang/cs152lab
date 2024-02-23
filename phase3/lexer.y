@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <map>
-#include <string.h>
+#include <string>
 #include <vector>
 struct CodeNode {
     std::string code;
