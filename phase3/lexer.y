@@ -202,7 +202,8 @@ Statement: Var EQUALS Expression
     struct CodeNode *node = new CodeNode;
     struct CodeNode *Var = $1;
     struct CodeNode *Expression = $3;
-    node->code = std::string("= ") + Var->code + std::string(", ") + Expression->result + std::string("\n");
+    node->code = Expression->code;
+    node->code += std::string("= ") + Var->code + std::string(", ") + Expression->result + std::string("\n");
     $$ = node;
 }
     | INTEGER Var
@@ -217,7 +218,8 @@ Statement: Var EQUALS Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *Var = $2;
         struct CodeNode *Expression = $4;
-        node->code = std::string(".") + Var->code + std::string("\n");
+        node->code = Expression->code;
+        node->code += std::string(".") + Var->code + std::string("\n");
         node->code += std::string("= ") + Var->code + std::string(", ") + Expression->result + std::string("\n");
         $$ = node;
     }
@@ -349,7 +351,7 @@ MultExp: Term
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
         node->code = std::string(".") + temp + std::string("\n");
-        node->code = std::string("* ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
+        node->code += std::string("* ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
         $$ = node;
     }
