@@ -108,7 +108,7 @@ Functions: Function Functions
     }
 ;
 
-Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
+Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY Statements RIGHTCURLY
 {
     struct CodeNode *node = new CodeNode;
     node->code += std::string("func ") + std::string($2) + std::string("\n");
