@@ -495,13 +495,37 @@ TrueFalse: Term EQUALITY Term
         $$ = node;
     }
     | Term LESS Term
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *firstterm = $1;
+        struct CodeNode *secondterm = $3;
+        node->code = std::string("(") + firstterm->code + "<" + secondterm->code + ")";
+        $$ = node;
+    }
     | Term LESSEQL Term
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *firstterm = $1;
+        struct CodeNode *secondterm = $3;
+        node->code = std::string("(") + firstterm->code + "<=" + secondterm->code + ")";
+        $$ = node;
+    }
     | Term GREATER Term
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *firstterm = $1;
+        struct CodeNode *secondterm = $3;
+        node->code = std::string("(") + firstterm->code + ">" + secondterm->code + ")";
+        $$ = node;
+    }
     | Term GREATEREQL Term
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *firstterm = $1;
+        struct CodeNode *secondterm = $3;
+        node->code = std::string("(") + firstterm->code + ">=" + secondterm->code + ")";
+        $$ = node;
+    }
 ; 
 
 
