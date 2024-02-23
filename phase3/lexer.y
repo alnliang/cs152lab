@@ -239,7 +239,14 @@ Statement: Var EQUALS Expression
         $$ = node;
     }
     | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *conditional = $3;
+        struct CodeNode *body = $6;
+        node->code = "while (" + conditional->code + ")\n";
+        node->code += body->code;
+        $$ = node;
+    }
     | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
     {}
     | READ Var
