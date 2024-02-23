@@ -108,7 +108,7 @@ Functions: Function Functions
     }
 ;
 
-Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY Statements RIGHTCURLY
+Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
 {
     struct CodeNode *node = new CodeNode;
     node->code += std::string("func ") + std::string($2) + std::string("\n");
@@ -186,14 +186,14 @@ Statements: Statement SEMICOLON Statements
     struct CodeNode *statements = $3;
     struct CodeNode *node = new CodeNode;
     node->code = (statement->code) + std::string("\n") + (statements->code);
-    node = $$;
+    $$ = node;
 }
     | Statement SEMICOLON
     {
         struct CodeNode *statement = $1;
         struct CodeNode *node = new CodeNode;
         node->code = (statement->code) + std::string("\n");
-        node = $$;
+        $$ = node;
     }
 ;
 
