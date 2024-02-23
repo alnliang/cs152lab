@@ -257,7 +257,12 @@ Statement: Var EQUALS Expression
         $$ = node;
     }
     | PRINT Var
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *var = $2;
+        node->code = "clog " + var->code + "\n";
+        $$ = node;
+    }
     | CONT
     {}
     | RETURN Expression
