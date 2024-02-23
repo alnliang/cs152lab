@@ -6,6 +6,7 @@
 #include <string.h>
 #include <vector>
 #include <cstring>
+#include <iostream>
 struct CodeNode {
     std::string code;
     std::string name;
