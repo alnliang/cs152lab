@@ -109,9 +109,7 @@ RIGHTCURLY
         size_t position = paramString.find(".");
         paramString.replace(position, 1, "=");
         std::string param = ", $";
-        std::string temp;
-        sprintf(temp, "%d", paramNum++);
-        param += temp;
+        param += std::string(paramNum++);
         param += std::string("\n");
         paramString.replace(paramString.find("\n", position), 1, param);
     }
