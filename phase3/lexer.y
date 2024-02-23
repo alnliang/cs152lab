@@ -12,6 +12,7 @@ struct CodeNode {
     std::string code;
     std::string name;
     bool array;
+    std::string result;
 };
 extern int yylex();
 extern int lineNum;
@@ -81,6 +82,7 @@ int tempNum = 0;
 %type <codenode> FuncBody
 %type <codenode> Term
 %type <codenode> VarArray
+%type <codenode> Expression
 
 %%
 program: Functions
@@ -197,12 +199,28 @@ Statements: Statement SEMICOLON Statements
 
 Statement: Var EQUALS Expression
 {
-
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *Var = $1;
+    struct CodeNode *Expression = $3;
+    node->code = std::string("= ") + Var->code + std::string(", ") + Expression->result + std::string("\n");
+    $$ = node;
 }
     | INTEGER Var
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *Var = $2;
+        node->code = std::string(". ") + Var->code + std::string("\n");
+        $$ = node;
+    }
     | INTEGER Var EQUALS Expression
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *Var = $2;
+        struct CodeNode *Expression = $4;
+        node->code = std::string(". ") + Var->code + std::string("\n");
+        node->code += std::string("= ") + Var->code + std::string(", ") + Expression->result + std::string("\n");
+        $$ = node;
+    }
     | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement
     {}
     | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
@@ -229,10 +247,12 @@ ElseStatement: %empty
 
 FuncCall: IDENTIFIER LFTPAREN ParamCalls RGTPAREN
 {
+    std::string temp = newTemp();
     struct CodeNode *node = new CodeNode;
     struct CodeNode *ParamCall = $3;
     node->code = ParamCall->code;
-    node->code += std::string("call ") + std::string($1)
+    node->code += std::string("call ") + std::string($1) + std::string(", ") + temp + std::string("\n");
+    node->result = temp;
     $$ = node;
 }
 ;
@@ -266,6 +286,13 @@ ParamCall: Var
     node->code = std::string("param ") + var->code + std::string("\n");
     $$ = node;
 }
+| Expression
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *Expression = $1;
+    node->code = std::string("param ") + Expression->result + std::string("\n");
+    $$ = node;
+}
 ;
 
 Expressions: %empty
@@ -276,46 +303,76 @@ Expressions: %empty
     {}
 
 Expression: MultExp
-{}
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *MultExp = $1;
+    node->code = MultExp->code;
+    node->result = MultExp->result;
+    $$ = node;
+}
     | MultExp PLUS Expression
-    {}
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *MultExp = $1;
+        struct CodeNode *Expression = $3;
+        node->code = std::string(". ") + temp + std::string("\n");
+        node->code += std::string("+ ") + temp + std::string(", ") + MultExp->result + std::string(", ") + Expression->result + std::string("\n");
+        node->result = temp;
+        $$ = node;
+    }
     | MultExp MINUS Expression
-    {}
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *MultExp = $1;
+        struct CodeNode *Expression = $3;
+        node->code = std::string(". ") + temp + std::string("\n");
+        node->code += std::string("- ") + temp + std::string(", ") + MultExp->result + std::string(", ") + Expression->result + std::string("\n");
+        node->result = temp;
+        $$ = node;
+    }
 ;
 
 MultExp: Term
 {
     struct CodeNode *node = new CodeNode;
     struct CodeNode *term = $1;
+    node->result = term->code;
     node->code = term->code;
     $$ = node;
 }
     | Term TIMES MultExp
     {
+        std::string temp = newTemp();
         struct CodeNode *node = new CodeNode;
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
-        if(!term->array && !multexp->array){
-            node->code = std::string("*") + term->code + multexp->code;
-        } else if(term->array && !multexp->array){
-            
-        }
+        node->code = std::string(". ") + temp + std::string("\n");
+        node->code = std::string("* ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
+        node->result = temp;
         $$ = node;
     }
     | Term DIVIDE MultExp
     {
+        std::string temp = newTemp();
         struct CodeNode *node = new CodeNode;
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
-        node->code = std::string("/") + term->code + multexp->code;
+        node->code = std::string(". ") + temp + std::string("\n");
+        node->code += std::string("/ ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
+        node->result = temp;
         $$ = node;
     }
     | Term MOD MultExp
     {
+        std::string temp = newTemp();
         struct CodeNode *node = new CodeNode;
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
-        node->code = std::string("%") + term->code + multexp->code;
+        node->code = std::string(". ") + temp + std::string("\n");
+        node->code += std::string("% ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
+        node->result = temp;
         $$ = node;
     }
 ;
@@ -392,6 +449,15 @@ TrueFalse: Term EQUALITY Term
 
 
 %%
+
+std::string newTemp(){
+    std::stringstream stream;        
+    stream << tempNum;        
+    std::string tempString = std::string("_temp");
+    tempString += stream.str();
+    tempNum += 1;
+    return tempString;
+}
 
 int main(void){
     yyparse();
