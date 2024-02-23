@@ -65,10 +65,10 @@ void yyerror(const char *s);
 %type <codenode> Parameters
 %type <codenode> Statements
 %type <codenode> Statement
-%type <codenode> Vars
 %type <codenode> Var
 %type <codenode> ParamCall
 %type <codenode> ParamCalls
+%type <codenode> FuncCall
 
 %%
 program: Functions
@@ -198,9 +198,13 @@ Expression: MultExp
     {}
 ;
 
-FuncCall: IDENTIFIER LFTPAREN ParamCall RGTPAREN
+FuncCall: IDENTIFIER LFTPAREN ParamCalls RGTPAREN
 {
-
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *ParamCall = $3;
+    node->code = ParamCall->code;
+    node->code += std::string("call ") + std::string($1)
+    $$ = node;
 }
 ;
 
@@ -211,7 +215,15 @@ ParamCalls: ParamCall COMMA ParamCalls
     struct CodeNode *ParamCalls = $3;
     node->code = ParamCall->code + ParamCalls->code;
     $$ = node;
-} | %empty
+}
+| ParamCall
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *ParamCall = $1;
+    node->code = ParamCall->code;
+    $$ = node;
+}
+| %empty
     {
         struct CodeNode *node = new CodeNode;
         $$ = node;
@@ -260,22 +272,6 @@ Var: IDENTIFIER
         struct CodeNode *expression = $2;
         node->code = expression->code;
         $$ = node;
-    }
-;
-
-Vars: Var
-{
-    struct CodeNode *node = new CodeNode;
-    struct CodeNode *var = $1;
-    node->code = var->code;
-    $$ = node;
-}
-    | Var COMMA Vars
-    {
-        struct CodeNode *node = new CodeNode;
-        struct CodeNode *var = $1;
-        struct CodeNode *vars = $3;
-        node->code
     }
 ;
 
