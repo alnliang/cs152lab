@@ -316,7 +316,7 @@ Expression: MultExp
         struct CodeNode *node = new CodeNode;
         struct CodeNode *MultExp = $1;
         struct CodeNode *Expression = $3;
-        node->code = std::string(". ") + temp + std::string("\n");
+        node->code = std::string(".") + temp + std::string("\n");
         node->code += std::string("+ ") + temp + std::string(", ") + MultExp->result + std::string(", ") + Expression->result + std::string("\n");
         node->result = temp;
         $$ = node;
@@ -327,7 +327,7 @@ Expression: MultExp
         struct CodeNode *node = new CodeNode;
         struct CodeNode *MultExp = $1;
         struct CodeNode *Expression = $3;
-        node->code = std::string(". ") + temp + std::string("\n");
+        node->code = std::string(".") + temp + std::string("\n");
         node->code += std::string("- ") + temp + std::string(", ") + MultExp->result + std::string(", ") + Expression->result + std::string("\n");
         node->result = temp;
         $$ = node;
@@ -348,7 +348,7 @@ MultExp: Term
         struct CodeNode *node = new CodeNode;
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
-        node->code = std::string(". ") + temp + std::string("\n");
+        node->code = std::string(".") + temp + std::string("\n");
         node->code = std::string("* ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
         $$ = node;
@@ -359,7 +359,7 @@ MultExp: Term
         struct CodeNode *node = new CodeNode;
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
-        node->code = std::string(". ") + temp + std::string("\n");
+        node->code = std::string(".") + temp + std::string("\n");
         node->code += std::string("/ ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
         $$ = node;
@@ -370,7 +370,7 @@ MultExp: Term
         struct CodeNode *node = new CodeNode;
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
-        node->code = std::string(". ") + temp + std::string("\n");
+        node->code = std::string(".") + temp + std::string("\n");
         node->code += std::string("% ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
         $$ = node;
