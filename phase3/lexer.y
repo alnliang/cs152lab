@@ -83,6 +83,9 @@ program: Functions
     {
         struct CodeNode *node = $1;
         printf("%s\n", node->code.c_str()); 
+    } | Parameters {
+        struct CodeNode *node = $1;
+        printf("%s\n", node->code.c_str()); 
     }
 ;
 
