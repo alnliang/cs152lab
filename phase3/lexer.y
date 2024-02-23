@@ -479,9 +479,21 @@ VarArray: IDENTIFIER LEFTBRACK Var RIGHTBRACK
 ;
 
 TrueFalse: Term EQUALITY Term
-{}
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *firstterm = $1;
+    struct CodeNode *secondterm = $3;
+    node->code = std::string("(") + firstterm->code + "==" + secondterm->code + ")";
+    $$ = node;
+}
     | Term NOTEQL Term
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *firstterm = $1;
+        struct CodeNode *secondterm = $3;
+        node->code = std::string("(") + firstterm->code + "!=" + secondterm->code + ")";
+        $$ = node;
+    }
     | Term LESS Term
     {}
     | Term LESSEQL Term
