@@ -54,8 +54,8 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 "for" {return FOR; lineCol += 3;}
 "func" {return FUNCTION; lineCol += 4;}
 {IDENTIFIER} {yylval.op_value = create_string(yytext, yyleng); return IDENTIFIER; lineCol += yyleng;}
-{DIGIT}+ {return NUMBER; lineCol += yyleng;}
-{ALPHA}+ {return IDENTIFIER; lineCol += yyleng;}
+{DIGIT}+ {yylval.op_value = create_string(yytext, yyleng); return NUMBER; lineCol += yyleng;}
+{ALPHA}+ {yylval.op_value = create_string(yytext, yyleng); return IDENTIFIER; lineCol += yyleng;}
 {COMMENT} 
 {WHITESPACE}+ {lineCol += yyleng;}
 {NEWLINE} {++lineNum;}
