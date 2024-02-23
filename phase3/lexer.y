@@ -11,12 +11,14 @@
 struct CodeNode {
     std::string code;
     std::string name;
+    bool array;
 };
 extern int yylex();
 extern int lineNum;
 extern int lineCol;
 /*the reason I used extern int here and didn't directly define it is because it's already defined in another file */
 void yyerror(const char *s);
+int tempNum = 0;
 %} 
 
 %union {
@@ -77,6 +79,8 @@ void yyerror(const char *s);
 %type <codenode> FuncCall
 %type <codenode> MultExp
 %type <codenode> FuncBody
+%type <codenode> Term
+%type <codenode> VarArray
 
 %%
 program: Functions
@@ -160,7 +164,7 @@ Parameters: %empty
     }
 ;
 
-/* FuncBody: %empty
+FuncBody: %empty
 {
     struct CodeNode *node = new CodeNode;
     $$ = node;
@@ -195,10 +199,6 @@ Statement: Var EQUALS Expression
 {
 
 }
-    | VarArray EQUALS Expression
-    {}
-    | INTEGER VarArray
-    {}
     | INTEGER Var
     {}
     | INTEGER Var EQUALS Expression
@@ -224,21 +224,6 @@ Statement: Var EQUALS Expression
 ElseStatement: %empty
 {}
     | ELSE LEFTCURLY Statements RIGHTCURLY
-    {}
-;
-
-Expressions: %empty
-{}
-    | Expression COMMA Expressions
-    {}
-    | Expression
-    {}
-
-Expression: MultExp
-{}
-    | MultExp PLUS Expression
-    {}
-    | MultExp MINUS Expression
     {}
 ;
 
@@ -283,6 +268,21 @@ ParamCall: Var
 }
 ;
 
+Expressions: %empty
+{}
+    | Expression COMMA Expressions
+    {}
+    | Expression
+    {}
+
+Expression: MultExp
+{}
+    | MultExp PLUS Expression
+    {}
+    | MultExp MINUS Expression
+    {}
+;
+
 MultExp: Term
 {
     struct CodeNode *node = new CodeNode;
@@ -295,7 +295,11 @@ MultExp: Term
         struct CodeNode *node = new CodeNode;
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
-        node->code = std::string("*") + term->code + multexp->code;
+        if(!term->array && !multexp->array){
+            node->code = std::string("*") + term->code + multexp->code;
+        } else if(term->array && !multexp->array){
+            
+        }
         $$ = node;
     }
     | Term DIVIDE MultExp
@@ -317,13 +321,26 @@ MultExp: Term
 ;
 
 Term: Var
-{}
-    | MINUS Var
-    {}
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *Var = $1;
+    node->code = Var->code;
+    $$ = node;
+}
     | NUMBER
-    {}
-    | MINUS NUMBER
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        node->code = std::string($1);
+        $$ = node;
+    }
+    | VarArray
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *VarArray = $1;
+        node->code = VarArray->code;
+        node->array = true;
+        $$ = node;
+    }
 ;
 
 
@@ -340,11 +357,22 @@ Var: IDENTIFIER
         node->code = expression->code;
         $$ = node;
     }
+    | VarArray
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *VarArray = $1;
+        node->code = VarArray->code;
+        $$ = node;
+    }
 ;
 
 VarArray: IDENTIFIER LEFTBRACK Var RIGHTBRACK
 {
-    
+    struct CodeNode *node = new CodeNode; 
+    struct CodeNode *Var = $3;
+    node->code = std::string("[]") + std::string($1) + std::string(", ") + Var->code;
+    node->array = true;
+    $$ = node;
 }
 ;
 
@@ -361,7 +389,7 @@ TrueFalse: Term EQUALITY Term
     | Term GREATEREQL Term
     {}
 ; 
- */
+
 
 %%
 
