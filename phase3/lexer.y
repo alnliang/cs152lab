@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <map>
 #include <string>
+#include <string.h>
 #include <vector>
 struct CodeNode {
     std::string code;
@@ -109,7 +110,7 @@ RIGHTCURLY
         size_t position = paramString.find(".");
         paramString.replace(position, 1, "=");
         std::string param = ", $";
-        param += std::string(paramNum++);
+        param += std::to_string(paramNum++);
         param += std::string("\n");
         paramString.replace(paramString.find("\n", position), 1, param);
     }
