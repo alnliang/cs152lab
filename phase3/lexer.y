@@ -5,6 +5,7 @@
 #include <string>
 #include <string.h>
 #include <vector>
+#include <cstring>
 struct CodeNode {
     std::string code;
     std::string name;
@@ -105,6 +106,7 @@ RIGHTCURLY
     node->code += std::string("func ") + std::string($2) + std::string("\n");
     struct CodeNode *Parameters = $4;
     std::string paramString = Parameters->code;
+    node->code += Parameters->code;
     int paramNum = 0;
     while(paramString.find(".") != std::string::npos){
         size_t position = paramString.find(".");
