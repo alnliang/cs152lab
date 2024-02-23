@@ -264,7 +264,11 @@ Statement: Var EQUALS Expression
         $$ = node;
     }
     | CONT
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        node->code = "continue\n";
+        $$ = node;
+    }
     | RETURN Expression
     {}
     | BREAK
