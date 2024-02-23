@@ -224,7 +224,20 @@ Statement: Var EQUALS Expression
         $$ = node;
     }
     | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *conditional = $3;
+        struct CodeNode *ifbody = $6;
+        struct CodeNode *elsebody = $8;
+        node->code = "if (" + conditional->code + ")\n";
+        node->code += ifbody->code;
+
+        if(elsebody != nullptr) {
+            node->code += "else\n";
+            node->code += elsebody->code;
+        }
+        $$ = node;
+    }
     | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
     {}
     | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
