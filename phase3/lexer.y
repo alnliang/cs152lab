@@ -20,6 +20,7 @@ extern int lineCol;
 /*the reason I used extern int here and didn't directly define it is because it's already defined in another file */
 void yyerror(const char *s);
 int tempNum = 0;
+std::string newTemp();
 %} 
 
 %union {
