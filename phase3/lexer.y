@@ -114,8 +114,8 @@ RIGHTCURLY
         paramString.replace(paramString.find("\n", position), 1, param);
     }
     node->code += paramString;
-    struct CodeNode *Statements = $7;
-    node->code += Statements->code;
+    // struct CodeNode *Statements = $7;
+    // node->code += Statements->code;
     node->code += std::string("endfunc\n");
     $$ = node;
 }
