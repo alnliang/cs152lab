@@ -277,7 +277,11 @@ Statement: Var EQUALS Expression
         $$ = node;
     }
     | BREAK
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        node->code = "break\n";
+        $$ = node;
+    }
 ;
 
 ElseStatement: %empty
