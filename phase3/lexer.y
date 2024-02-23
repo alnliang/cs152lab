@@ -361,7 +361,7 @@ TrueFalse: Term EQUALITY Term
     | Term GREATEREQL Term
     {}
 ; 
-
+ */
 
 %%
 
@@ -371,4 +371,4 @@ int main(void){
 
 void yyerror(const char *s){
     printf("Error: %s\n", s);
-} */
+}
