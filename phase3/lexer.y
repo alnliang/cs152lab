@@ -240,13 +240,36 @@ ParamCall: Var
 ;
 
 MultExp: Term
-{}
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *term = $1;
+    node->code = term->code;
+    $$ = node;
+}
     | Term TIMES MultExp
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *term = $1;
+        struct CodeNode *multexp = $3;
+        node->code = std::string("*") + term->code + multexp->code;
+        $$ = node;
+    }
     | Term DIVIDE MultExp
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *term = $1;
+        struct CodeNode *multexp = $3;
+        node->code = std::string("/") + term->code + multexp->code;
+        $$ = node;
+    }
     | Term MOD MultExp
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *term = $1;
+        struct CodeNode *multexp = $3;
+        node->code = std::string("%") + term->code + multexp->code;
+        $$ = node;
+    }
 ;
 
 Term: Var
