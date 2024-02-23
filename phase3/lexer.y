@@ -272,7 +272,7 @@ Statement: Var EQUALS Expression
     | RETURN Expression
     {
         struct CodeNode *node = new CodeNode;
-        struct CodeNode *expression = $1;
+        struct CodeNode *expression = $2;
         node->code = "return " + expression->code + "\n";
         $$ = node;
     }
