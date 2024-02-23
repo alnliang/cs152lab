@@ -1,8 +1,9 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
-#include <string>
+#include <map>
+#include <string.h>
+#include <vector>
 struct CodeNode {
     std::string code;
     std::string name;
@@ -63,12 +64,15 @@ void yyerror(const char *s);
 %type <codenode> Functions
 %type <codenode> Function
 %type <codenode> Parameters
+%type <codenode> Parameter
 %type <codenode> Statements
 %type <codenode> Statement
 %type <codenode> Var
 %type <codenode> ParamCall
 %type <codenode> ParamCalls
 %type <codenode> FuncCall
+%type <codenode> MultExp
+%type <codenode> FuncBody
 
 %%
 program: Functions
@@ -97,7 +101,20 @@ Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RI
 {
     struct CodeNode *node = new CodeNode;
     node->code += std::string("func ") + std::string($2) + std::string("\n");
-
+    struct CodeNode *Parameters = $4;
+    std::string paramString = Parameters->code;
+    int paramNum = 0;
+    while(paramString.find(".") != std::string::npos){
+        size_t position = paramString.find(".");
+        paramString.replace(position, 1, "=");
+        std::string param = ", $";
+        param += std::to_string(paramNum++);
+        param += std::string("\n");
+        paramString.replace(paramString.find("\n", position), 1, param);
+    }
+    node->code += paramString;
+    struct CodeNode *Statements = $7;
+    node->code += Statements->code;
     node->code += std::string("endfunc\n");
     $$ = node;
 }
@@ -106,7 +123,8 @@ Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RI
 Parameter: INTEGER IDENTIFIER
 {
     struct CodeNode *node = new CodeNode;
-    node->code += std::string(".") + std::string($2);
+    node->code += std::string(".") + std::string($2) + std::string("\n");
+    $$ = node;
 }
 ;
 
@@ -118,16 +136,32 @@ Parameters: %empty
     | Parameters COMMA Parameter
     {
         struct CodeNode *node = new CodeNode;
-
+        struct CodeNode *Parameters = $1;
+        struct CodeNode *Parameter = $3;
+        node->code = Parameters->code + Parameter->code;
+        $$ = node;
     }
     | Parameter
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *Parameter = $1;
+        node->code = Parameter->code;
+        $$ = node;
+    }
 ;
 
 FuncBody: %empty
-{}
+{
+    struct CodeNode *node = new CodeNode;
+    $$ = node;
+}
     | Statements
-    {}
+    {
+        struct CodeNode *Statements = $1;
+        struct CodeNode *node = new CodeNode;
+        node->code = Statements->code;
+        $$ = node;
+    }
 ;
 
 Statements: Statement SEMICOLON Statements
