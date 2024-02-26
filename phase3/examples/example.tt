@@ -10,3 +10,12 @@ func hi(int a, int b){
     int c;
     c = a + b;
 }
+
+func add(){
+  int a;
+  int b;
+  int c;
+  a = 100;
+  b = 50;
+  c = a + b;
+}
