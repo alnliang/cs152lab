@@ -267,7 +267,7 @@ Statement: INTEGER VarArray
         struct CodeNode *node = new CodeNode;
         struct CodeNode *VarArray = $2;
         node->code = VarArray->code;
-        node->code = ".> " + VarArray->result;
+        node->code += ".> " + VarArray->result;
         $$ = node;
 
     }
@@ -351,10 +351,12 @@ Expressions: %empty
 
 Expression: MultExp
 {
+    std::string temp = newTemp();
     struct CodeNode *node = new CodeNode;
     struct CodeNode *MultExp = $1;
-    node->code = MultExp->code;
-    node->result = MultExp->result;
+    node->code = std::string(". ") + temp + std::string("\n");
+    nodd->code += std::string("= ") + temp + std::string(", ") + MultExp.result;
+    node->result = temp;
     $$ = node;
 }
     | MultExp PLUS Expression
