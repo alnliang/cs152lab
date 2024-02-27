@@ -262,6 +262,14 @@ Statement: INTEGER VarArray
     {}
     | READ Var
     {}
+    | PRINT LFTPAREN VarArray RGTPAREN
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *VarArray = $3;
+        node->code = VarArray->code;
+        node->code += ".> " + VarArray->result;
+        $$ = node;
+    }
     | PRINT VarArray
     {
         struct CodeNode *node = new CodeNode;
