@@ -210,7 +210,7 @@ Statement: INTEGER VarArray
     struct CodeNode *VarArray = $1;
     struct CodeNode *Expression = $3;
     node->code = Expression->code;
-    node->code += std::string("[]= ") +  VarArray->name + std::string(", ") + VarArray->index;
+    node->code += std::string("[]= ") +  VarArray->name + std::string(", ") + VarArray->index + std::string(", ") + Expression->result;
     $$ = node;
 }
 | Var EQUALS NUMBER 
@@ -355,7 +355,7 @@ Expression: MultExp
     struct CodeNode *node = new CodeNode;
     struct CodeNode *MultExp = $1;
     node->code = std::string(". ") + temp + std::string("\n");
-    node->code += std::string("= ") + temp + std::string(", ") + MultExp->result;
+    node->code += std::string("= ") + temp + std::string(", ") + MultExp->result + std::string("\n");
     node->result = temp;
     $$ = node;
 }
