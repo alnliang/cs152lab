@@ -439,6 +439,12 @@ Term: Var
     node->code = Var->code;
     $$ = node;
 }
+| NUMBER
+    {
+        struct CodeNode *node = new CodeNode;
+        node->code = std::string($1);
+        $$ = node;
+    }
 ;
 
 
@@ -455,12 +461,6 @@ Var: IDENTIFIER
         node->code = expression->code;
         $$ = node;
     }
-    | NUMBER
-    {
-        struct CodeNode *node = new CodeNode;
-        node->code = std::string($1);
-        $$ = node;
-    }
 ;
 
 VarArray: IDENTIFIER LEFTBRACK Var RIGHTBRACK
@@ -470,6 +470,17 @@ VarArray: IDENTIFIER LEFTBRACK Var RIGHTBRACK
     struct CodeNode *Var = $3;
     node->name = std::string($1);
     node->index = Var->code;
+    node->result = temp;
+    node->code = std::string(". ") + temp + std::string("\n");
+    node->code += std::string("=[] ") + temp + std::string(", ") + node->name + std::string(", ") + node->index + std::string("\n");
+    $$ = node;
+} 
+| IDENTIFIER LEFTBRACK NUMBER RIGHTBRACK
+{
+    std::string temp = newTemp();
+    struct CodeNode *node = new CodeNode; 
+    node->name = std::string($1);
+    node->index = std::string($3);
     node->result = temp;
     node->code = std::string(". ") + temp + std::string("\n");
     node->code += std::string("=[] ") + temp + std::string(", ") + node->name + std::string(", ") + node->index + std::string("\n");
