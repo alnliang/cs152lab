@@ -15,6 +15,7 @@ func add(){
   int a;
   int b;
   int c;
+  int d[20];
   a = 100;
   b = 50;
   c = a + b;
