@@ -205,6 +205,12 @@ Statement: INTEGER VarArray
     node->code = std::string(".[] ") + VarArray->name + std::string(", ") + VarArray->index;
     $$ = node;
 }
+| VarArray EQUALS NUMBER
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *VarArray = $1;
+    node->code = std::string("[]= ") + VarArray->name + std::string(", ") + VarArray->index + std::string(", ") + std::string($3);
+}
 | VarArray EQUALS Expression
 {
     struct CodeNode *node = new CodeNode;
