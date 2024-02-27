@@ -10,7 +10,6 @@
 #include <sstream>
 struct CodeNode {
     std::string code;
-    std::string name;
     std::string result;
     std::string name;
     std::string index;
@@ -276,7 +275,7 @@ Statement: INTEGER VarArray
     {
         struct CodeNode *node = new CodeNode;
         struct CodeNode *Var = $2;
-        node->code = ".> " + Var.code;
+        node->code = ".> " + Var->code;
         $$ = node;
     }
     | CONT
@@ -473,7 +472,7 @@ VarArray: IDENTIFIER LEFTBRACK Var RIGHTBRACK
     node->index = Var->code;
     node->result = temp;
     node->code = std::string(". ") + temp + std::string("\n");
-    node->code += std::string("=[] ") + temp + std::string(", ") + name + std::string(", ") + index + std::string("\n");
+    node->code += std::string("=[] ") + temp + std::string(", ") + node->name + std::string(", ") + node->index + std::string("\n");
     $$ = node;
 }
 ;
