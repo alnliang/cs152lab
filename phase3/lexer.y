@@ -13,6 +13,7 @@ struct CodeNode {
     std::string result;
     std::string name;
     std::string index;
+    bool temp;
 };
 extern int yylex();
 extern int lineNum;
@@ -363,8 +364,12 @@ Expression: MultExp
     struct CodeNode *node = new CodeNode;
     struct CodeNode *MultExp = $1;
     node->code = std::string(". ") + temp + std::string("\n");
+    if(MultExp->temp == true){
+        node->code += MultExp->code;
+    }
     node->code += std::string("= ") + temp + std::string(", ") + MultExp->result + std::string("\n");
     node->result = temp;
+    node->temp = true;
     $$ = node;
 }
     | MultExp PLUS Expression
@@ -374,8 +379,15 @@ Expression: MultExp
         struct CodeNode *MultExp = $1;
         struct CodeNode *Expression = $3;
         node->code = std::string(". ") + temp + std::string("\n");
+        if(MultExp->temp == true){
+            node->code += MultExp->code;
+        }
+        if(Expression->temp == true){
+            node->code += Expression->code;
+        }   
         node->code += std::string("+ ") + temp + std::string(", ") + MultExp->result + std::string(", ") + Expression->result + std::string("\n");
         node->result = temp;
+        node->temp = true;
         $$ = node;
     }
     | MultExp MINUS Expression
@@ -385,8 +397,15 @@ Expression: MultExp
         struct CodeNode *MultExp = $1;
         struct CodeNode *Expression = $3;
         node->code = std::string(". ") + temp + std::string("\n");
+        if(MultExp->temp == true){
+            node->code += MultExp->code;
+        }
+        if(Expression->temp == true){
+            node->code += Expression->code;
+        }   
         node->code += std::string("- ") + temp + std::string(", ") + MultExp->result + std::string(", ") + Expression->result + std::string("\n");
         node->result = temp;
+        node->temp = true;
         $$ = node;
     }
 ;
@@ -408,6 +427,7 @@ MultExp: Term
         node->code = std::string(". ") + temp + std::string("\n");
         node->code += std::string("* ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
+        node->temp = true;
         $$ = node;
     }
     | Term DIVIDE MultExp
@@ -419,6 +439,7 @@ MultExp: Term
         node->code = std::string(". ") + temp + std::string("\n");
         node->code += std::string("/ ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
+        node->temp = true;
         $$ = node;
     }
     | Term MOD MultExp
@@ -430,6 +451,7 @@ MultExp: Term
         node->code = std::string(". ") + temp + std::string("\n");
         node->code += std::string("% ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
+        node->temp = true;
         $$ = node;
     }
     | VarArray
@@ -483,6 +505,7 @@ VarArray: IDENTIFIER LEFTBRACK Var RIGHTBRACK
     node->result = temp;
     node->code = std::string(". ") + temp + std::string("\n");
     node->code += std::string("=[] ") + temp + std::string(", ") + node->name + std::string(", ") + node->index + std::string("\n");
+    node->temp = true;
     $$ = node;
 } 
 | IDENTIFIER LEFTBRACK NUMBER RIGHTBRACK
@@ -494,6 +517,7 @@ VarArray: IDENTIFIER LEFTBRACK Var RIGHTBRACK
     node->result = temp;
     node->code = std::string(". ") + temp + std::string("\n");
     node->code += std::string("=[] ") + temp + std::string(", ") + node->name + std::string(", ") + node->index + std::string("\n");
+    node->temp = true;
     $$ = node;
 }
 ;
