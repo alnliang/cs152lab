@@ -439,12 +439,6 @@ Term: Var
     node->code = Var->code;
     $$ = node;
 }
-    | NUMBER
-    {
-        struct CodeNode *node = new CodeNode;
-        node->code = std::string($1);
-        $$ = node;
-    }
 ;
 
 
@@ -459,6 +453,12 @@ Var: IDENTIFIER
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression = $2;
         node->code = expression->code;
+        $$ = node;
+    }
+    | NUMBER
+    {
+        struct CodeNode *node = new CodeNode;
+        node->code = std::string($1);
         $$ = node;
     }
 ;
