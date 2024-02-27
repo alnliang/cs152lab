@@ -355,7 +355,7 @@ Expression: MultExp
     struct CodeNode *node = new CodeNode;
     struct CodeNode *MultExp = $1;
     node->code = std::string(". ") + temp + std::string("\n");
-    nodd->code += std::string("= ") + temp + std::string(", ") + MultExp.result;
+    node->code += std::string("= ") + temp + std::string(", ") + MultExp->result;
     node->result = temp;
     $$ = node;
 }
