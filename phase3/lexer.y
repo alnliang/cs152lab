@@ -11,8 +11,9 @@
 struct CodeNode {
     std::string code;
     std::string name;
-    bool array;
     std::string result;
+    std::string name;
+    std::string index;
 };
 extern int yylex();
 extern int lineNum;
@@ -118,7 +119,7 @@ Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RI
     int paramNum = 0;
     while(paramString.find(".") != std::string::npos){
         size_t position = paramString.find(".");
-        paramString.replace(position, 1, "= ");
+        paramString.replace(position, 1, "=");
         std::string param = ", $";
         std::stringstream stream;
         stream << paramNum;
@@ -139,7 +140,7 @@ Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RI
 Parameter: INTEGER IDENTIFIER
 {
     struct CodeNode *node = new CodeNode;
-    node->code += std::string(".") + std::string($2) + std::string("\n");
+    node->code += std::string(". ") + std::string($2) + std::string("\n");
     $$ = node;
 }
 ;
@@ -197,19 +198,35 @@ Statements: Statement SEMICOLON Statements
     }
 ;
 
-Statement: Var EQUALS NUMBER 
+Statement: INTEGER VarArray
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *VarArray = $2;
+    node->code = std::string(".[] ") + VarArray->name + std::string(", ") + VarArray->index;
+    $$ = node;
+}
+| VarArray EQUALS Expression
+{
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *VarArray = $1;
+    struct CodeNode *Expression = $3;
+    node->code = Expression->code;
+    node->code += std::string("[]= ") +  VarArray->name + std::string(", ") + VarArray->index;
+    $$ = node;
+}
+| Var EQUALS NUMBER 
 {
     struct CodeNode *node = new CodeNode;
     struct CodeNode *Var = $1;
-    node->code = std::string("= ") + Var->code + std::string(", ") + std::string($3) + std::string("\n");
+    node->code = std::string("= ") + Var->code + std::string(", ") + std::string($3);
     $$ = node;
 }
 | INTEGER Var EQUALS NUMBER 
 {
     struct CodeNode *node = new CodeNode;
     struct CodeNode *Var = $2;
-    node->code = std::string(".") + Var->code + std::string("\n"); 
-    node->code += std::string("= ") + Var->code + std::string(", ") + std::string($4) + std::string("\n");
+    node->code = std::string(". ") + Var->code + std::string("\n"); 
+    node->code += std::string("= ") + Var->code + std::string(", ") + std::string($4);
     $$ = node;
 }
 | Var EQUALS Expression
@@ -218,14 +235,14 @@ Statement: Var EQUALS NUMBER
     struct CodeNode *Var = $1;
     struct CodeNode *Expression = $3;
     node->code = Expression->code;
-    node->code += std::string("= ") + Var->code + std::string(", ") + Expression->result + std::string("\n");
+    node->code += std::string("= ") + Var->code + std::string(", ") + Expression->result;
     $$ = node;
 }
     | INTEGER Var
     {
         struct CodeNode *node = new CodeNode;
         struct CodeNode *Var = $2;
-        node->code = std::string(".") + Var->code + std::string("\n");
+        node->code = std::string(". ") + Var->code;
         $$ = node;
     }
     | INTEGER Var EQUALS Expression
@@ -234,8 +251,8 @@ Statement: Var EQUALS NUMBER
         struct CodeNode *Var = $2;
         struct CodeNode *Expression = $4;
         node->code = Expression->code;
-        node->code += std::string(".") + Var->code + std::string("\n");
-        node->code += std::string("= ") + Var->code + std::string(", ") + Expression->result + std::string("\n");
+        node->code += std::string(". ") + Var->code + std::string("\n");
+        node->code += std::string("= ") + Var->code + std::string(", ") + Expression->result;
         $$ = node;
     }
     | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement
@@ -246,8 +263,22 @@ Statement: Var EQUALS NUMBER
     {}
     | READ Var
     {}
+    | PRINT VarArray
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *VarArray = $2;
+        node->code = VarArray->code;
+        node->code = ".> " + VarArray->result;
+        $$ = node;
+
+    }
     | PRINT Var
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *Var = $2;
+        node->code = ".> " + Var.code;
+        $$ = node;
+    }
     | CONT
     {}
     | RETURN Expression
@@ -333,7 +364,7 @@ Expression: MultExp
         struct CodeNode *node = new CodeNode;
         struct CodeNode *MultExp = $1;
         struct CodeNode *Expression = $3;
-        node->code = std::string(".") + temp + std::string("\n");
+        node->code = std::string(". ") + temp + std::string("\n");
         node->code += std::string("+ ") + temp + std::string(", ") + MultExp->result + std::string(", ") + Expression->result + std::string("\n");
         node->result = temp;
         $$ = node;
@@ -344,7 +375,7 @@ Expression: MultExp
         struct CodeNode *node = new CodeNode;
         struct CodeNode *MultExp = $1;
         struct CodeNode *Expression = $3;
-        node->code = std::string(".") + temp + std::string("\n");
+        node->code = std::string(". ") + temp + std::string("\n");
         node->code += std::string("- ") + temp + std::string(", ") + MultExp->result + std::string(", ") + Expression->result + std::string("\n");
         node->result = temp;
         $$ = node;
@@ -365,7 +396,7 @@ MultExp: Term
         struct CodeNode *node = new CodeNode;
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
-        node->code = std::string(".") + temp + std::string("\n");
+        node->code = std::string(". ") + temp + std::string("\n");
         node->code += std::string("* ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
         $$ = node;
@@ -376,7 +407,7 @@ MultExp: Term
         struct CodeNode *node = new CodeNode;
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
-        node->code = std::string(".") + temp + std::string("\n");
+        node->code = std::string(". ") + temp + std::string("\n");
         node->code += std::string("/ ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
         $$ = node;
@@ -387,9 +418,17 @@ MultExp: Term
         struct CodeNode *node = new CodeNode;
         struct CodeNode *term = $1;
         struct CodeNode *multexp = $3;
-        node->code = std::string(".") + temp + std::string("\n");
+        node->code = std::string(". ") + temp + std::string("\n");
         node->code += std::string("% ") + temp + std::string(", ") + term->code + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
+        $$ = node;
+    }
+    | VarArray
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *vararray = $1;
+        node->code = vararray->code;
+        node->result = vararray->result;
         $$ = node;
     }
 ;
@@ -405,14 +444,6 @@ Term: Var
     {
         struct CodeNode *node = new CodeNode;
         node->code = std::string($1);
-        $$ = node;
-    }
-    | VarArray
-    {
-        struct CodeNode *node = new CodeNode;
-        struct CodeNode *VarArray = $1;
-        node->code = VarArray->code;
-        node->array = true;
         $$ = node;
     }
 ;
@@ -431,21 +462,18 @@ Var: IDENTIFIER
         node->code = expression->code;
         $$ = node;
     }
-    | VarArray
-    {
-        struct CodeNode *node = new CodeNode;
-        struct CodeNode *VarArray = $1;
-        node->code = VarArray->code;
-        $$ = node;
-    }
 ;
 
 VarArray: IDENTIFIER LEFTBRACK Var RIGHTBRACK
 {
+    std::string temp = newTemp();
     struct CodeNode *node = new CodeNode; 
     struct CodeNode *Var = $3;
-    node->code = std::string("[]") + std::string($1) + std::string(", ") + Var->code;
-    node->array = true;
+    node->name = std::string($1);
+    node->index = Var->code;
+    node->result = temp;
+    node->code = std::string(". ") + temp + std::string("\n");
+    node->code += std::string("=[] ") + temp + std::string(", ") + name + std::string(", ") + index + std::string("\n");
     $$ = node;
 }
 ;
