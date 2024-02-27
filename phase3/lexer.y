@@ -202,6 +202,7 @@ Statement: Var EQUALS NUMBER
     struct CodeNode *node = new CodeNode;
     struct CodeNode *Var = $1;
     node->code = std::string("= ") + Var->code + std::string(", ") + std::string($3) + std::string("\n");
+    $$ = node;
 }
 | INTEGER Var EQUALS NUMBER 
 {
@@ -209,6 +210,7 @@ Statement: Var EQUALS NUMBER
     struct CodeNode *Var = $2;
     node->code = std::string(".") + Var->code + std::string("\n"); 
     node->code += std::string("= ") + Var->code + std::string(", ") + std::string($4) + std::string("\n");
+    $$ = node;
 }
 | Var EQUALS Expression
 {
