@@ -210,6 +210,7 @@ Statement: INTEGER VarArray
     struct CodeNode *node = new CodeNode;
     struct CodeNode *VarArray = $1;
     node->code = std::string("[]= ") + VarArray->name + std::string(", ") + VarArray->index + std::string(", ") + std::string($3);
+    $$ = node;
 }
 | VarArray EQUALS Expression
 {
