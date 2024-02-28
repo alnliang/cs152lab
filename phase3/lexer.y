@@ -410,7 +410,7 @@ Expression: MultExp
                 node->code += MultExp->code;
                 node->code += Expression->code;
             }
-        } else if(MultExp->temp == true || Expression->temp == true){
+        } if((MultExp->temp == true && MultExp->array == false) || (Expression->temp == true && Expression->array == false)){
             if(MultExp->temp == false){
                 node->code += Expression->code;
             } else if(Expression->temp == false){
@@ -476,7 +476,7 @@ MultExp: Term
                 node->code += term->code;
                 node->code += multexp->code;
             }
-        } else if(term->temp == true || multexp->temp == true){
+        } if((term->temp == true && term->array == false) || (multexp->temp == true && multexp->array == false)){
             if(term->temp == false){
                 node->code += multexp->code;
             } else if(multexp->temp == false){
@@ -508,7 +508,7 @@ MultExp: Term
                 node->code += term->code;
                 node->code += multexp->code;
             }
-        } else if(term->temp == true || multexp->temp == true){
+        } if((term->temp == true && term->array == false) || (multexp->temp == true && multexp->array == false)){
             if(term->temp == false){
                 node->code += multexp->code;
             } else if(multexp->temp == false){
@@ -540,7 +540,7 @@ MultExp: Term
                 node->code += term->code;
                 node->code += multexp->code;
             }
-        } else if(term->temp == true || multexp->temp == true){
+        } if((term->temp == true && term->array == false) || (multexp->temp == true && multexp->array == false)){
             if(term->temp == false){
                 node->code += multexp->code;
             } else if(multexp->temp == false){
