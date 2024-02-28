@@ -212,7 +212,7 @@ Statement: Var EQUALS NUMBER
     if(Var->array == true){
         node->code += Var->index + std::string(", ");
     }
-    node->code += std::string($3) + std::string("\n");
+    node->code += std::string($3);
     $$ = node;
 }
     | INTEGER IDENTIFIER EQUALS NUMBER 
@@ -237,7 +237,7 @@ Statement: Var EQUALS NUMBER
         if(Var->array == true){
             node->code += Var->index + std::string(", ");
         }
-        node->code += Expression->result + std::string("\n");
+        node->code += Expression->result;
         $$ = node;
     }
     | INTEGER Var
