@@ -773,7 +773,7 @@ VarArray: IDENTIFIER LEFTBRACK NUMBER RIGHTBRACK
     struct CodeNode *node = new CodeNode; 
     node->name = std::string($1);
     node->index = std::string($3);
-    int i = std::stoi(index);
+    int i = stoi(node->index);
     node->result = temp;
     node->code = std::string(". ") + temp + std::string("\n");
     node->code += std::string("=[] ") + temp + std::string(", ") + node->name + std::string(", ") + node->index + std::string("\n");
