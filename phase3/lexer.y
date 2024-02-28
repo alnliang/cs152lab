@@ -378,7 +378,7 @@ Expression: MultExp
                 node->code += MultExp->code;
                 node->code += Expression->code;
             }
-        } else if(MultExp->temp == true || Expression->temp == true){
+        } if((MultExp->temp == true && MultExp->array == false) || (Expression->temp == true && Expression->array == false)){
             if(MultExp->temp == false){
                 node->code += Expression->code;
             } else if(Expression->temp == false){
