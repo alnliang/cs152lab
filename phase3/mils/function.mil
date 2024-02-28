@@ -23,11 +23,15 @@ func main
 . b
 param 10
 param 2
+. _temp2
 call add, _temp2
 = a, _temp2
 .> a
 param a
+. _temp3
++ _temp3, a, b
 param _temp3
+. _temp4
 call mul, _temp4
 = b, _temp4
 .> b
