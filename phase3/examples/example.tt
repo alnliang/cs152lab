@@ -22,9 +22,9 @@ func add(){
 }
 
 func add() {
-    return a + b;
+    return(a + b);
 }
 
 func mul() {
-     return a * b;
+     return(a * b);
 }
