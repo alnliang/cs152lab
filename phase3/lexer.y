@@ -34,6 +34,18 @@ struct Function {
 
 std::vector <Function> symbol_table;
 
+std::vector<std::string> keywords = {"return", "int", "clog", "cfetch", "while", "if", "else", "break", "continue", "for", "func", "SEMICOLON", "LFTPAREN", "RGTPAREN", "LEFTCURLY", "RIGHTCURLY", "LEFTBRACK", "RIGHTBRACK", "COMMA", "PLUS", "MINUS", "TIMES", "DIVIDE", "MOD", "EQUALS", "LESS", "LESSEQL", "GREATER", "GREATEREQL", "EQUALITY", "NOTEQL", "RETURN", "INTEGER", "PRINT", "READ", "WHILE", "IF", "ELSE", "BREAK", "CONT", "FOR", "FUNCTION", "IDENTIFIER", "NUMBER"};
+
+bool isKeyword(std::string &value){
+    for(int i = 0; i < keywords.size(); i++){
+        std::string *keyword = &keyowrds.at(i);
+        if(value == keyword){
+            return true;
+        }
+    }
+    return false;
+}
+
 // remember that Bison is a bottom up parser: that it parses leaf nodes first before
 // parsing the parent nodes. So control flow begins at the leaf grammar nodes
 // and propagates up to the parents.
