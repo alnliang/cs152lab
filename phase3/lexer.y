@@ -441,6 +441,7 @@ Expression: MultExp
         node->code = FuncCall->code;
         node->result = FuncCall->result;
         node->name = FuncCall->result;
+        node->temp = true;
         $$ = node;
     }
 ;
