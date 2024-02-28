@@ -173,7 +173,8 @@ void print_symbol_table(void) {
 %%
 program: Functions
     {
-        if(findFunction("main") == false){
+        std::string func_name = "main";
+        if(findFunction(func_name) == false){
             yyerror("main function not declared");
         }
         struct CodeNode *node = $1;
