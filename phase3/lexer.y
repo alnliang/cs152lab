@@ -449,6 +449,8 @@ Statement: Var EQUALS NUMBER
             yyerror("Duplicate variable.");
         } else if(find(variable_name, Array)){
             yyerror("Duplicate variable.");
+        } else if(isKeyword(variable_name)){
+            yyerror("Variable name cannot be keyword");
         }
         add_variable_to_symbol_table(variable_name, Integer);
         if(Expression->array == true || Expression->temp == true){
