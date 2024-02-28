@@ -1,5 +1,5 @@
 func main() {
-	int array[-1];
+	int array[4];
 
 	$ Should print out '2'
 	array[0] = 2;
