@@ -289,21 +289,17 @@ Statement: Var EQUALS NUMBER
     std::string variable_name = Var->name;
     if(Var->array == true){
         if(find(variable_name, Array) == false){
-            const char *errormsg = ("Variable %s not initialized.", variable_name.c_str());
-            yyerror(errormsg);
+            yyerror("Variable not initialized");
         }
         if(find(variable_name, Integer)){
-            const char *errormsg = ("Variable %s is an integer type.", variable_name.c_str());
-            yyerror(errormsg);
+            yyerror("Variable is an integer type");
         }
     } else {
         if(find(variable_name, Integer) == false){
-            const char *errormsg = ("Variable %s not initialized.", variable_name.c_str());
-            yyerror(errormsg);
+            yyerror("Variable not initialized");
         }
         if(find(variable_name, Array)){
-            const char *errormsg = ("Variable %s is an array type.", variable_name.c_str());
-            yyerror(errormsg);
+            yyerror("Variable is an array type");
         }
     }
     if(Var->array == true){
@@ -340,21 +336,17 @@ Statement: Var EQUALS NUMBER
         std::string variable_name = Var->name;
         if(Var->array == true){
             if(find(variable_name, Array) == false){
-                const char *errormsg = ("Variable %s not initialized.", variable_name.c_str());
-                yyerror(errormsg);
+                yyerror("Variable not initialized");
             }
             if(find(variable_name, Integer)){
-                const char *errormsg = ("Variable %s is an integer type.", variable_name.c_str());
-                yyerror(errormsg);
+                yyerror("Variable is an integer type");
             }
         } else {
             if(find(variable_name, Integer) == false){
-                const char *errormsg = ("Variable %s not initialized.", variable_name.c_str());
-                yyerror(errormsg);
+                yyerror("Variable not initialized");
             }
             if(find(variable_name, Array)){
-                const char *errormsg = ("Variable %s is an array type.", variable_name.c_str());
-                yyerror(errormsg);
+                yyerror("Variable is an array type");
             }
         }
         if(Expression->temp == true || Expression->array == true){
