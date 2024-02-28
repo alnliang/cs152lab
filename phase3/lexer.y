@@ -187,13 +187,16 @@ func_header: FUNCTION IDENTIFIER
 {
     std::string function_name = std::string($2);
     add_function_to_symbol_table(function_name);
-    $$ = $2;
+    struct CodeNode *node = new CodeNode;
+    node->code = std::string($2);
+    $$ = node;
 }
 
 Function: func_header LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
 {
     struct CodeNode *node = new CodeNode;
-    node->code += std::string("func ") + std::string($1) + std::string("\n");
+    struct CodeNode *header = new CodeNode;
+    node->code += std::string("func ") + header->code + std::string("\n");
     struct CodeNode *Parameters = $3;
     std::string paramString = Parameters->code;
     node->code += Parameters->code;
