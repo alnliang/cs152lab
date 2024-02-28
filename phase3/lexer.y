@@ -195,7 +195,7 @@ func_header: FUNCTION IDENTIFIER
 Function: func_header LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
 {
     struct CodeNode *node = new CodeNode;
-    struct CodeNode *header = new CodeNode;
+    struct CodeNode *header = $1;
     node->code += std::string("func ") + header->code + std::string("\n");
     struct CodeNode *Parameters = $3;
     std::string paramString = Parameters->code;
