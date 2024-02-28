@@ -340,7 +340,7 @@ Statement: Var EQUALS NUMBER
         std::string variable_name = Var->name;
         if(Var->array == true){
         if(find(variable_name, Array) == false){
-            std::string error_message = std::string("Variable ") + variable_name + std::string(" not initialized.");
+            char* error_message = "Variable " + variable_name + " not initialized.";
             yyerror(error_message);
         }
         if(find(variable_name, Integer)){
