@@ -173,7 +173,7 @@ void print_symbol_table(void) {
 %%
 program: Functions
     {
-        if(findFunctions("main") == false){
+        if(findFunction("main") == false){
             yyerror("main function not declared");
         }
         struct CodeNode *node = $1;
