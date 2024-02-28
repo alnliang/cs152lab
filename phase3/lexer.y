@@ -3,9 +3,7 @@
 #include <stdlib.h>
 #include <map>
 #include <string>
-#include <string.h>
 #include <vector>
-#include <cstring>
 #include <iostream>
 #include <sstream>
 struct CodeNode {
@@ -187,7 +185,7 @@ Functions: Function Functions
 
 func_header: FUNCTION IDENTIFIER
 {
-    std::string function_name = $2;
+    std::string function_name = std::string($2);
     add_function_to_symbol_table(function_name);
     $$ = $2;
 }
