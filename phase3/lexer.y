@@ -231,7 +231,7 @@ Statement: Var EQUALS NUMBER
             node->code = Expression->code;
         }
         if(Var->array == true){
-            node->code += std::string("[]")
+            node->code += std::string("[]");
         }
         node->code += std::string("= ") + Var->name + std::string(", ");
         if(Var->array == true){
