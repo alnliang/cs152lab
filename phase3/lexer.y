@@ -260,6 +260,14 @@ Function: func_header LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
 Parameter: INTEGER IDENTIFIER
 {
     struct CodeNode *node = new CodeNode;
+    std::string variable_name = std::string($2);
+    if(find(variable_name, Integer)){
+        yyerror("Duplicate variable.");
+    } else if(find(variable_name, Array)){
+        yyerror("Duplicate variable.");
+    } else if(isKeyword(variable_name)){
+        yyerror("Variable name cannot be keyword");
+    }
     node->code += std::string(". ") + std::string($2) + std::string("\n");
     $$ = node;
 }
@@ -358,6 +366,8 @@ Statement: Var EQUALS NUMBER
             yyerror("Duplicate variable.");
         } else if(find(variable_name, Array)){
             yyerror("Duplicate variable.");
+        } else if(isKeyword(variable_name)){
+            yyerror("Variable name cannot be keyword");
         }
         add_variable_to_symbol_table(variable_name, Integer);
         node->code = std::string(". ") + std::string($2) + std::string("\n"); 
@@ -407,6 +417,8 @@ Statement: Var EQUALS NUMBER
             yyerror("Duplicate variable.");
         } else if(find(variable_name, Array)){
             yyerror("Duplicate variable.");
+        } else if(isKeyword(variable_name)){
+            yyerror("Variable name cannot be keyword");
         }
         node->code = std::string(".");
         if(Var->array == true){
