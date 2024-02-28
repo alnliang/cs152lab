@@ -7,6 +7,7 @@ func add
 + _temp0, a, b
 ret _temp0
 endfunc
+
 func mul
 . a
 . b
@@ -16,6 +17,7 @@ func mul
 * _temp1, a, b
 ret _temp1
 endfunc
+
 func main
 . a
 . b
@@ -30,4 +32,5 @@ call mul, _temp4
 = b, _temp4
 .> b
 endfunc
+
 
