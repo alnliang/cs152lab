@@ -311,6 +311,7 @@ FuncCall: IDENTIFIER LFTPAREN ParamCalls RGTPAREN
     struct CodeNode *node = new CodeNode;
     struct CodeNode *ParamCall = $3;
     node->code = ParamCall->code;
+    node->code = std::string(". ") + temp + std::string("\n");
     node->code += std::string("call ") + std::string($1) + std::string(", ") + temp + std::string("\n");
     node->result = temp;
     node->temp = true;
