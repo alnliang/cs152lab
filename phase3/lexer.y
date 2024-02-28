@@ -56,7 +56,7 @@ bool find(std::string &value, Type t) {
   Function *f = get_function();
   for(int i=0; i < f->declarations.size(); i++) {
     Symbol *s = &f->declarations[i];
-    if (s->name == value && s->type = t) {
+    if (s->name == value && s->type == t) {
       return true;
     }
   }
