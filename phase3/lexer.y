@@ -23,6 +23,7 @@ extern int lineCol;
 void yyerror(const char *s);
 int tempNum = 0;
 std::string newTemp();
+enum Type { Integer, Array };
 struct Symbol {
   std::string name;
   Type type;
