@@ -293,6 +293,7 @@ Statement: Var EQUALS NUMBER
             node->code = Expression->code;
         }
         node->code += std::string("ret ") + Expression->result;
+        $$ = node;
     }
     | BREAK
     {}
