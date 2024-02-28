@@ -133,7 +133,7 @@ Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RI
     node->code += paramString;
     struct CodeNode *Statements = $7;
     node->code += Statements->code;
-    node->code += std::string("endfunc\n");
+    node->code += std::string("endfunc\n\n");
     $$ = node;
 }
 ;
