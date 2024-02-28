@@ -432,7 +432,7 @@ Statement: Var EQUALS NUMBER
             int i;
             ss >> i;
             if(i <= 0){
-                yyerror("Array index cannot be less than 0");
+                yyerror("Array size cannot be less than 0");
             }
             add_variable_to_symbol_table(variable_name, Array);
         } else {
