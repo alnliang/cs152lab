@@ -289,21 +289,17 @@ Statement: Var EQUALS NUMBER
     std::string variable_name = Var->name;
     if(Var->array == true){
         if(find(variable_name, Array) == false){
-            std::string error_message = std::string("Variable ") + variable_name + std::string(" not initialized.");
-            yyerror(error_message);
+            yyerror(("Variable %s not initialized.", variable_name.c_str()));
         }
         if(find(variable_name, Integer)){
-            std::string error_message = std::string("Variable ") + variable_name + std::string(" is an integer type.");
-            yyerror(error_message);
+            yyerror(("Variable %s is an integer type.", variable_name.c_str()));
         }
     } else {
         if(find(variable_name, Integer) == false){
-            std::string error_message = std::string("Variable ") + variable_name + std::string(" not initialized.");
-            yyerror(error_message);
+            yyerror(("Variable %s not initialized.", variable_name.c_str()));
         }
         if(find(variable_name, Array)){
-            std::string error_message = std::string("Variable ") + variable_name + std::string(" is an array type.");
-            yyerror(error_message);
+            yyerror(("Variable %s is an array type.", variable_name.c_str()));
         }
     }
     if(Var->array == true){
@@ -339,22 +335,18 @@ Statement: Var EQUALS NUMBER
         struct CodeNode *Expression = $3;
         std::string variable_name = Var->name;
         if(Var->array == true){
-        if(find(variable_name, Array) == false){
-            char* error_message = "Variable " + variable_name + " not initialized.";
-            yyerror(error_message);
-        }
-        if(find(variable_name, Integer)){
-            std::string error_message = std::string("Variable ") + variable_name + std::string(" is an integer type.");
-            yyerror(error_message);
-        }
+            if(find(variable_name, Array) == false){
+                yyerror(("Variable %s not initialized.", variable_name.c_str()));
+            }
+            if(find(variable_name, Integer)){
+                yyerror(("Variable %s is an integer type.", variable_name.c_str()));
+            }
         } else {
             if(find(variable_name, Integer) == false){
-            std::string error_message = std::string("Variable ") + variable_name + std::string(" not initialized.");
-            yyerror(error_message);
+                yyerror(("Variable %s not initialized.", variable_name.c_str()));
             }
             if(find(variable_name, Array)){
-            std::string error_message = std::string("Variable ") + variable_name + std::string(" is an array type.");
-            yyerror(error_message);
+                yyerror(("Variable %s is an array type.", variable_name.c_str()));
             }
         }
         if(Expression->temp == true || Expression->array == true){
