@@ -52,11 +52,11 @@ Function *get_function() {
 // grab the most recent function, and linear search to
 // find the symbol you are looking for.
 // you may want to extend "find" to handle different types of "Integer" vs "Array"
-bool find(std::string &value) {
+bool find(std::string &value, Type t) {
   Function *f = get_function();
   for(int i=0; i < f->declarations.size(); i++) {
     Symbol *s = &f->declarations[i];
-    if (s->name == value) {
+    if (s->name == value && s->type = t) {
       return true;
     }
   }
@@ -301,6 +301,13 @@ Statement: Var EQUALS NUMBER
     | INTEGER IDENTIFIER EQUALS NUMBER 
     {
         struct CodeNode *node = new CodeNode;
+        std::string variable_name = std::string($2);
+        if(find(variable_name, Integer)){
+            yyerror("Duplicate variable.");
+        } else if(find(variable_name, Array)){
+            yyerror("Duplicate variable.");
+        }
+        add_variable_to_symbol_table(variable_name, Integer);
         node->code = std::string(". ") + std::string($2) + std::string("\n"); 
         node->code += std::string("= ") + std::string($2) + std::string(", ") + std::string($4);
         $$ = node;
@@ -327,6 +334,12 @@ Statement: Var EQUALS NUMBER
     {
         struct CodeNode *node = new CodeNode;
         struct CodeNode *Var = $2;
+        std::string variable_name = Var->name;
+        if(find(variable_name, Integer)){
+            yyerror("Duplicate variable.");
+        } else if(find(variable_name, Array)){
+            yyerror("Duplicate variable.");
+        }
         node->code = std::string(".");
         if(Var->array == true){
             node->code += std::string("[]");
@@ -334,6 +347,9 @@ Statement: Var EQUALS NUMBER
         node->code += std::string(" ") + Var->name;
         if(Var->array == true){
             node->code += std::string(", ") + Var->index;
+            add_variable_to_symbol_table(variable_name, Array);
+        } else {
+            add_variable_to_symbol_table(variable_name, Integer);
         }
         $$ = node;
     }
