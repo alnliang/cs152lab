@@ -777,6 +777,9 @@ VarArray: IDENTIFIER LEFTBRACK NUMBER RIGHTBRACK
     ss << node->index;
     int i;
     ss >> i;
+    if(i <= 0){
+        yyerror("Array size/index cannot be less than 1");
+    }
     node->result = temp;
     node->code = std::string(". ") + temp + std::string("\n");
     node->code += std::string("=[] ") + temp + std::string(", ") + node->name + std::string(", ") + node->index + std::string("\n");
