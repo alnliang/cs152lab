@@ -23,6 +23,79 @@ extern int lineCol;
 void yyerror(const char *s);
 int tempNum = 0;
 std::string newTemp();
+struct Symbol {
+  std::string name;
+  Type type;
+};
+
+struct Function {
+  std::string name;
+  std::vector<Symbol> declarations;
+};
+
+std::vector <Function> symbol_table;
+
+// remember that Bison is a bottom up parser: that it parses leaf nodes first before
+// parsing the parent nodes. So control flow begins at the leaf grammar nodes
+// and propagates up to the parents.
+Function *get_function() {
+  int last = symbol_table.size()-1;
+  if (last < 0) {
+    printf("***Error. Attempt to call get_function with an empty symbol table\n");
+    printf("Create a 'Function' object using 'add_function_to_symbol_table' before\n");
+    printf("calling 'find' or 'add_variable_to_symbol_table'");
+    exit(1);
+  }
+  return &symbol_table[last];
+}
+
+// find a particular variable using the symbol table.
+// grab the most recent function, and linear search to
+// find the symbol you are looking for.
+// you may want to extend "find" to handle different types of "Integer" vs "Array"
+bool find(std::string &value) {
+  Function *f = get_function();
+  for(int i=0; i < f->declarations.size(); i++) {
+    Symbol *s = &f->declarations[i];
+    if (s->name == value) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// when you see a function declaration inside the grammar, add
+// the function name to the symbol table
+void add_function_to_symbol_table(std::string &value) {
+  Function f; 
+  f.name = value; 
+  symbol_table.push_back(f);
+}
+
+// when you see a symbol declaration inside the grammar, add
+// the symbol name as well as some type information to the symbol table
+void add_variable_to_symbol_table(std::string &value, Type t) {
+  Symbol s;
+  s.name = value;
+  s.type = t;
+  Function *f = get_function();
+  f->declarations.push_back(s);
+}
+
+// a function to print out the symbol table to the screen
+// largely for debugging purposes.
+void print_symbol_table(void) {
+  printf("symbol table:\n");
+  printf("--------------------\n");
+  for(int i=0; i<symbol_table.size(); i++) {
+    printf("function: %s\n", symbol_table[i].name.c_str());
+    for(int j=0; j<symbol_table[i].declarations.size(); j++) {
+      printf("  locals: %s\n", symbol_table[i].declarations[j].name.c_str());
+    }
+  }
+  printf("--------------------\n");
+}
+
 %} 
 
 %union {
@@ -86,6 +159,7 @@ std::string newTemp();
 %type <codenode> Term
 %type <codenode> VarArray
 %type <codenode> Expression
+%type <codenode> func_header
 
 %%
 program: Functions
@@ -110,11 +184,18 @@ Functions: Function Functions
     }
 ;
 
-Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
+func_header: FUNCTION IDENTIFIER
+{
+    std::string function_name = $2;
+    add_function_to_symbol_table(function_name);
+    $$ = $2;
+}
+
+Function: func_header LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
 {
     struct CodeNode *node = new CodeNode;
-    node->code += std::string("func ") + std::string($2) + std::string("\n");
-    struct CodeNode *Parameters = $4;
+    node->code += std::string("func ") + std::string($1) + std::string("\n");
+    struct CodeNode *Parameters = $3;
     std::string paramString = Parameters->code;
     node->code += Parameters->code;
     int paramNum = 0;
@@ -131,7 +212,7 @@ Function: FUNCTION IDENTIFIER LFTPAREN Parameters RGTPAREN LEFTCURLY FuncBody RI
         paramString.replace(paramString.find("\n", position), 1, param);
     }
     node->code += paramString;
-    struct CodeNode *Statements = $7;
+    struct CodeNode *Statements = $6;
     node->code += Statements->code;
     node->code += std::string("endfunc\n\n");
     $$ = node;
@@ -655,6 +736,7 @@ std::string newTemp(){
 
 int main(void){
     yyparse();
+    print_symbol_table();
 }
 
 void yyerror(const char *s){
