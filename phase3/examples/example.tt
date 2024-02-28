@@ -1,0 +1,30 @@
+func main(){
+    int a;
+    int b;
+    int c;
+    c = a * b;
+}
+
+func hi(int a, int b){
+    int d = 4 + 6;
+    int c;
+    c = a + b;
+}
+
+func add(){
+  int a;
+  int b;
+  int c;
+  int d[20];
+  a = 100;
+  b = 50;
+  c = a + b;
+}
+
+func add() {
+    return(a + b);
+}
+
+func mul() {
+     return(a * b);
+}
