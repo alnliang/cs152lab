@@ -34,11 +34,21 @@ struct Function {
 
 std::vector <Function> symbol_table;
 
-std::vector<std::string> keywords = {"return", "int", "clog", "cfetch", "while", "if", "else", "break", "continue", "for", "func", "SEMICOLON", "LFTPAREN", "RGTPAREN", "LEFTCURLY", "RIGHTCURLY", "LEFTBRACK", "RIGHTBRACK", "COMMA", "PLUS", "MINUS", "TIMES", "DIVIDE", "MOD", "EQUALS", "LESS", "LESSEQL", "GREATER", "GREATEREQL", "EQUALITY", "NOTEQL", "RETURN", "INTEGER", "PRINT", "READ", "WHILE", "IF", "ELSE", "BREAK", "CONT", "FOR", "FUNCTION", "IDENTIFIER", "NUMBER"};
+std::string keywords[44] = {"return", "int", "clog", "cfetch", 
+"while", "if", "else", "break", 
+"continue", "for", "func", "SEMICOLON", 
+"LFTPAREN", "RGTPAREN", "LEFTCURLY", "RIGHTCURLY", 
+"LEFTBRACK", "RIGHTBRACK", "COMMA", "PLUS", 
+"MINUS", "TIMES", "DIVIDE", "MOD", 
+"EQUALS", "LESS", "LESSEQL", "GREATER", 
+"GREATEREQL", "EQUALITY", "NOTEQL", "RETURN", 
+"INTEGER", "PRINT", "READ", "WHILE", 
+"IF", "ELSE", "BREAK", "CONT", 
+"FOR", "FUNCTION", "IDENTIFIER", "NUMBER"};
 
 bool isKeyword(std::string value){
-    for(int i = 0; i < keywords.size(); i++){
-        std::string keyword = keyowrds.at(i);
+    for(int i = 0; i < 44; i++){
+        std::string keyword = keywords[i];
         if(value == keyword){
             return true;
         }
