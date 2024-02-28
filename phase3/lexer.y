@@ -63,6 +63,16 @@ bool find(std::string &value, Type t) {
   return false;
 }
 
+bool findFunction(std::string &value){
+    for(int i = 0; i < symbol_table.size(); i++){
+        Function *f = &symbol_table.at(i);
+        if(f->name == value){
+            return true;
+        }
+    }
+    return false;
+}
+
 // when you see a function declaration inside the grammar, add
 // the function name to the symbol table
 void add_function_to_symbol_table(std::string &value) {
@@ -448,6 +458,10 @@ FuncCall: IDENTIFIER LFTPAREN ParamCalls RGTPAREN
     std::string temp = newTemp();
     struct CodeNode *node = new CodeNode;
     struct CodeNode *ParamCall = $3;
+    std::string func_name = std::string($1);
+    if(findFunction(func_name) == false){
+        yyerror("Function not defined");
+    }
     node->code = ParamCall->code;
     node->code += std::string(". ") + temp + std::string("\n");
     node->code += std::string("call ") + std::string($1) + std::string(", ") + temp + std::string("\n");
@@ -749,13 +763,12 @@ Var: IDENTIFIER
     }
 ;
 
-VarArray: IDENTIFIER LEFTBRACK Term RIGHTBRACK
+VarArray: IDENTIFIER LEFTBRACK NUMBER RIGHTBRACK
 {
     std::string temp = newTemp();
     struct CodeNode *node = new CodeNode; 
-    struct CodeNode *Term = $3;
     node->name = std::string($1);
-    node->index = Term->result;
+    node->index = std::string($3);
     node->result = temp;
     node->code = std::string(". ") + temp + std::string("\n");
     node->code += std::string("=[] ") + temp + std::string(", ") + node->name + std::string(", ") + node->index + std::string("\n");
