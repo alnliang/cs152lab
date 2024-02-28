@@ -851,7 +851,6 @@ std::string newTemp(){
 
 int main(void){
     yyparse();
-    print_symbol_table();
 }
 
 void yyerror(const char *s){
