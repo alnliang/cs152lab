@@ -286,6 +286,26 @@ Statement: Var EQUALS NUMBER
 {
     struct CodeNode *node = new CodeNode;
     struct CodeNode *Var = $1;
+    std::string variable_name = Var->name;
+    if(Var->array == true){
+        if(find(variable_name, Array) == false){
+            std::string error_message = std::string("Variable ") + variable_name + std::string(" not initialized.");
+            yyerror(error_message);
+        }
+        if(find(variable_name, Integer)){
+            std::string error_message = std::string("Variable ") + variable_name + std::string(" is an integer type.");
+            yyerror(error_message);
+        }
+    } else {
+        if(find(variable_name, Integer) == false){
+            std::string error_message = std::string("Variable ") + variable_name + std::string(" not initialized.");
+            yyerror(error_message);
+        }
+        if(find(variable_name, Array)){
+            std::string error_message = std::string("Variable ") + variable_name + std::string(" is an array type.");
+            yyerror(error_message);
+        }
+    }
     if(Var->array == true){
         node->code = std::string("[]= ");
     } else {
@@ -317,6 +337,26 @@ Statement: Var EQUALS NUMBER
         struct CodeNode *node = new CodeNode;
         struct CodeNode *Var = $1;
         struct CodeNode *Expression = $3;
+        std::string variable_name = Var->name;
+        if(Var->array == true){
+        if(find(variable_name, Array) == false){
+            std::string error_message = std::string("Variable ") + variable_name + std::string(" not initialized.");
+            yyerror(error_message);
+        }
+        if(find(variable_name, Integer)){
+            std::string error_message = std::string("Variable ") + variable_name + std::string(" is an integer type.");
+            yyerror(error_message);
+        }
+        } else {
+            if(find(variable_name, Integer) == false){
+            std::string error_message = std::string("Variable ") + variable_name + std::string(" not initialized.");
+            yyerror(error_message);
+            }
+            if(find(variable_name, Array)){
+            std::string error_message = std::string("Variable ") + variable_name + std::string(" is an array type.");
+            yyerror(error_message);
+            }
+        }
         if(Expression->temp == true || Expression->array == true){
             node->code = Expression->code;
         }
@@ -357,6 +397,13 @@ Statement: Var EQUALS NUMBER
     {
         struct CodeNode *node = new CodeNode;
         struct CodeNode *Expression = $4;
+        std::string variable_name = std::string($2);
+        if(find(variable_name, Integer)){
+            yyerror("Duplicate variable.");
+        } else if(find(variable_name, Array)){
+            yyerror("Duplicate variable.");
+        }
+        add_variable_to_symbol_table(variable_name, Integer);
         if(Expression->array == true || Expression->temp == true){
             node->code = Expression->code;
         }
