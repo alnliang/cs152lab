@@ -340,18 +340,14 @@ ParamCalls: ParamCall COMMA ParamCalls
     }
 ;
 
-ParamCall: Term
-{
-    struct CodeNode *node = new CodeNode;
-    struct CodeNode *term = $1;
-    node->code = std::string("param ") + term->code + std::string("\n");
-    $$ = node;
-}
-| Expression
+ParamCall: Expression
 {
     struct CodeNode *node = new CodeNode;
     struct CodeNode *Expression = $1;
-    node->code = std::string("param ") + Expression->result + std::string("\n");
+    if(Expression->temp == true || Expression->array == true){
+        node->code = Expression->code;
+    }
+    node->code += std::string("param ") + Expression->result + std::string("\n");
     $$ = node;
 }
 ;
