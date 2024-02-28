@@ -435,17 +435,6 @@ Expression: MultExp
         node->name = FuncCall->result;
         $$ = node;
     }
-    | LFTPAREN Expression RGTPAREN
-    {
-        struct CodeNode *node = new CodeNode;
-        struct CodeNode *expression = $2;
-        node->code = expression->code;
-        node->result = expression->result;
-        node->temp = expression->temp;
-        node->name = expression->result;
-        node->index = expression->index;
-        $$ = node;
-    }
 ;
 
 MultExp: Term
@@ -578,6 +567,17 @@ Term: Var
         struct CodeNode *node = new CodeNode;
         node->code = std::string($1);
         node->result = std::string($1);
+        $$ = node;
+    }
+    | LFTPAREN Expression RGTPAREN
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression = $2;
+        node->code = expression->code;
+        node->result = expression->result;
+        node->temp = expression->temp;
+        node->name = expression->result;
+        node->index = expression->index;
         $$ = node;
     }
 ;
