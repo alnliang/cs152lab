@@ -11,6 +11,6 @@ func main() {
     int b;
     a = add(10, 2);
     clog(a);
-    b = mul(a, a + b);
+    b = mull(a, a + b);
     clog(b);
 }
