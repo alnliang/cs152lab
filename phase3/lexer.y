@@ -427,6 +427,13 @@ Statement: Var EQUALS NUMBER
         node->code += std::string(" ") + Var->name;
         if(Var->array == true){
             node->code += std::string(", ") + Var->index;
+            std::stringstream ss;
+            ss << Var->index;
+            int i;
+            ss >> i;
+            if(i <= 0){
+                yyerror("Array index cannot be less than 0");
+            }
             add_variable_to_symbol_table(variable_name, Array);
         } else {
             add_variable_to_symbol_table(variable_name, Integer);
@@ -811,8 +818,8 @@ VarArray: IDENTIFIER LEFTBRACK NUMBER RIGHTBRACK
     ss << node->index;
     int i;
     ss >> i;
-    if(i <= 0){
-        yyerror("Array size/index cannot be less than 1");
+    if(i < 0){
+        yyerror("Array index cannot be less than 0");
     }
     node->result = temp;
     node->code = std::string(". ") + temp + std::string("\n");
