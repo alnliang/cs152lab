@@ -336,7 +336,8 @@ Statement: Var EQUALS NUMBER
         std::string variable_name = Var->name;
         if(Var->array == true){
             if(find(variable_name, Array) == false){
-                yyerror(("Variable %s not initialized.", variable_name.c_str()));
+                char *errormsg = ("Variable %s not initialized.", variable_name.c_str())
+                yyerror(errormsg);
             }
             if(find(variable_name, Integer)){
                 yyerror(("Variable %s is an integer type.", variable_name.c_str()));
