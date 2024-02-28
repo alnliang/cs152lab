@@ -286,7 +286,14 @@ Statement: Var EQUALS NUMBER
     | CONT
     {}
     | RETURN Expression
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *Expression = $2;
+        if(Expression->array == true || Expression->temp == true){
+            node->code = Expression->code;
+        }
+        node->code += std::string("ret ") + Expression->result;
+    }
     | BREAK
     {}
 ;
