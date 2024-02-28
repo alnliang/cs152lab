@@ -339,7 +339,7 @@ ParamCalls: ParamCall COMMA ParamCalls
     }
 ;
 
-ParamCall: Var
+ParamCall: Term
 {
     struct CodeNode *node = new CodeNode;
     struct CodeNode *var = $1;
