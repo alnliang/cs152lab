@@ -1,6 +1,6 @@
 func main
-.[] array, 4
-[]= array, 0, 2
+.[] array, 10
+[]= array, 4, 5
 . _temp2
 =[] _temp2, array, 0
 .> _temp2
@@ -8,23 +8,23 @@ func main
 . _temp4
 =[] _temp4, array, 0
 . _temp5
-=[] _temp5, array, 0
+=[] _temp5, array, 1
 + _temp6, _temp4, _temp5
 []= array, 1, _temp6
 . _temp7
-=[] _temp7, array, 1
+=[] _temp7, array, 0
 .> _temp7
 . _temp11
 . _temp9
 =[] _temp9, array, 1
 . _temp9
-=[] _temp9, array, 1
+=[] _temp9, array, 2
 . _temp10
-* _temp10, 2, 2
+* _temp10, 3, 3
 + _temp11, _temp9, _temp10
 []= array, 2, _temp11
 . _temp12
-=[] _temp12, array, 2
+=[] _temp12, array, 3
 .> _temp12
 endfunc
 
