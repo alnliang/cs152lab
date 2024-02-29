@@ -25,10 +25,10 @@ func main
 = c, _temp4
 .> c
 = a, 4
-= b, 7
-. _temp6
+= b, 6
 . _temp5
-+ _temp5, a, 2
+. _temp5
++ _temp6, a, 3
 * _temp6, _temp5, b
 = c, _temp6
 .> c
