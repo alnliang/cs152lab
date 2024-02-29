@@ -1,8 +1,15 @@
 %{
-#include "y.tab.h"
+#include "lexer.tab.h"
 #include <stdio.h>
 int lineNum = 1;
 int lineCol = 0;
+
+char *create_string(char *text, int len) {
+  char *string_value = new char[len + 1];
+  strcpy(string_value, text);
+  return string_value;
+}
+
 %}
 
 DIGIT [0-9]
@@ -46,9 +53,9 @@ INVALID_UNDERSCORE {IDENTIFIER}"_"+
 "continue" {return CONT; lineCol += 8;}
 "for" {return FOR; lineCol += 3;}
 "func" {return FUNCTION; lineCol += 4;}
-{IDENTIFIER} {return IDENTIFIER; lineCol += yyleng;}
-{DIGIT}+ {return NUMBER; lineCol += yyleng;}
-{ALPHA}+ {return IDENTIFIER; lineCol += yyleng;}
+{IDENTIFIER} {yylval.op_value = create_string(yytext, yyleng); return IDENTIFIER; lineCol += yyleng;}
+("-"|"")({DIGIT}+) {yylval.op_value = create_string(yytext, yyleng); return NUMBER; lineCol += yyleng;}
+{ALPHA}+ {yylval.op_value = create_string(yytext, yyleng); return IDENTIFIER; lineCol += yyleng;}
 {COMMENT} 
 {WHITESPACE}+ {lineCol += yyleng;}
 {NEWLINE} {++lineNum;}
