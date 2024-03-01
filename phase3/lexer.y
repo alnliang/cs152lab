@@ -191,6 +191,7 @@ void print_symbol_table(void) {
 %type <codenode> VarArray
 %type <codenode> Expression
 %type <codenode> func_header
+%type <codenode> TrueFalse
 
 %%
 program: Functions
@@ -832,18 +833,114 @@ VarArray: IDENTIFIER LEFTBRACK NUMBER RIGHTBRACK
 } 
 ;
 
-TrueFalse: Term EQUALITY Term
-{}
-    | Term NOTEQL Term
-    {}
-    | Term LESS Term
-    {}
-    | Term LESSEQL Term
-    {}
-    | Term GREATER Term
-    {}
-    | Term GREATEREQL Term
-    {}
+TrueFalse: Expression EQUALITY Expression
+{
+    std::string temp = newTemp();
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *expression1 = $1;
+    struct CodeNode *expression2 = $3;
+    if(expression1->temp == true || expression1->array == true){
+        node->code += expression1->code;
+    }
+    if(expression2->temp == true || expression2->array == true){
+        node->code += expression2->code;
+    }
+    node->code += std::string(". ") + temp + std::string("\n");
+    node->code += std::string("== ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+    node->temp = true;
+    node->result = temp;
+    $$ = node;
+}
+    | Expression NOTEQL Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(". ") + temp + std::string("\n");
+        node->code += std::string("!= ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression LESS Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(". ") + temp + std::string("\n");
+        node->code += std::string("< ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression LESSEQL Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(". ") + temp + std::string("\n");
+        node->code += std::string("<= ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression GREATER Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(". ") + temp + std::string("\n");
+        node->code += std::string("> ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression GREATEREQL Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(". ") + temp + std::string("\n");
+        node->code += std::string(">= ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
 ; 
 
 
