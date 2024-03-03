@@ -8,8 +8,10 @@
 #include <sstream>
 struct CodeNode {
     std::string code = "";
-    std::string result = "";
-    std::string name = "";
+    std::string result = "noResult";
+    std::string name = "noName";
+    std::string index = "-1";
+    bool temp = false;
     bool array = false;
 };
 extern int yylex();
@@ -19,7 +21,11 @@ extern int lineCol;
 void yyerror(const char *s);
 int tempNum = 0;
 std::string newTemp();
-
+enum Type { Integer, Array };
+struct Symbol {
+  std::string name;
+  Type type;
+};
 
 struct Function {
   std::string name;
@@ -40,6 +46,88 @@ std::string keywords[44] = {"return", "int", "clog", "cfetch",
 "IF", "ELSE", "BREAK", "CONT", 
 "FOR", "FUNCTION", "IDENTIFIER", "NUMBER"};
 
+bool isKeyword(std::string value){
+    for(int i = 0; i < 44; i++){
+        std::string keyword = keywords[i];
+        if(value == keyword){
+            return true;
+        }
+    }
+    return false;
+}
+
+// remember that Bison is a bottom up parser: that it parses leaf nodes first before
+// parsing the parent nodes. So control flow begins at the leaf grammar nodes
+// and propagates up to the parents.
+Function *get_function() {
+  int last = symbol_table.size()-1;
+  if (last < 0) {
+    printf("***Error. Attempt to call get_function with an empty symbol table\n");
+    printf("Create a 'Function' object using 'add_function_to_symbol_table' before\n");
+    printf("calling 'find' or 'add_variable_to_symbol_table'");
+    exit(1);
+  }
+  return &symbol_table[last];
+}
+
+// find a particular variable using the symbol table.
+// grab the most recent function, and linear search to
+// find the symbol you are looking for.
+// you may want to extend "find" to handle different types of "Integer" vs "Array"
+bool find(std::string &value, Type t) {
+  Function *f = get_function();
+  for(int i=0; i < f->declarations.size(); i++) {
+    Symbol *s = &f->declarations[i];
+    if (s->name == value && s->type == t) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool findFunction(std::string &value){
+    for(int i = 0; i < symbol_table.size(); i++){
+        Function *f = &symbol_table.at(i);
+        if(f->name == value){
+            return true;
+        }
+    }
+    return false;
+}
+
+// when you see a function declaration inside the grammar, add
+// the function name to the symbol table
+void add_function_to_symbol_table(std::string &value) {
+  Function f; 
+  f.name = value; 
+  symbol_table.push_back(f);
+}
+
+// when you see a symbol declaration inside the grammar, add
+// the symbol name as well as some type information to the symbol table
+void add_variable_to_symbol_table(std::string &value, Type t) {
+  Symbol s;
+  s.name = value;
+  s.type = t;
+  Function *f = get_function();
+  f->declarations.push_back(s);
+}
+
+// a function to print out the symbol table to the screen
+// largely for debugging purposes.
+void print_symbol_table(void) {
+  printf("symbol table:\n");
+  printf("--------------------\n");
+  for(int i=0; i<symbol_table.size(); i++) {
+    printf("function: %s\n", symbol_table[i].name.c_str());
+    for(int j=0; j<symbol_table[i].declarations.size(); j++) {
+      printf("  locals: %s\n", symbol_table[i].declarations[j].name.c_str());
+    }
+  }
+  printf("--------------------\n");
+}
+
+%} 
 
 %union {
  char *id;
@@ -103,6 +191,7 @@ std::string keywords[44] = {"return", "int", "clog", "cfetch",
 %type <codenode> VarArray
 %type <codenode> Expression
 %type <codenode> func_header
+%type <codenode> TrueFalse
 
 %%
 program: Functions
@@ -494,7 +583,16 @@ Expression: MultExp
                 node->code += MultExp->code;
                 node->code += Expression->code;
             }
-        } 
+        } if((MultExp->temp == true && MultExp->array == false) || (Expression->temp == true && Expression->array == false)){
+            if(MultExp->temp == false){
+                node->code += Expression->code;
+            } else if(Expression->temp == false){
+                node->code += MultExp->code;
+            } else {
+                node->code += MultExp->code;
+                node->code += Expression->code;
+            }
+        }
         node->code += std::string("+ ") + temp + std::string(", ") + MultExp->result + std::string(", ") + Expression->result + std::string("\n");
         node->result = temp;
         node->name = temp;
@@ -517,7 +615,16 @@ Expression: MultExp
                 node->code += MultExp->code;
                 node->code += Expression->code;
             }
-        } 
+        } if((MultExp->temp == true && MultExp->array == false) || (Expression->temp == true && Expression->array == false)){
+            if(MultExp->temp == false){
+                node->code += Expression->code;
+            } else if(Expression->temp == false){
+                node->code += MultExp->code;
+            } else {
+                node->code += MultExp->code;
+                node->code += Expression->code;
+            }
+        }
         node->code += std::string("- ") + temp + std::string(", ") + MultExp->result + std::string(", ") + Expression->result + std::string("\n");
         node->result = temp;
         node->name = temp;
@@ -564,7 +671,16 @@ MultExp: Term
                 node->code += term->code;
                 node->code += multexp->code;
             }
-        } 
+        } if((term->temp == true && term->array == false) || (multexp->temp == true && multexp->array == false)){
+            if(term->temp == false){
+                node->code += multexp->code;
+            } else if(multexp->temp == false){
+                node->code += term->code;
+            } else {
+                node->code += term->code;
+                node->code += multexp->code;
+            }
+        }
         node->code += std::string("* ") + temp + std::string(", ") + term->result + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
         node->name = temp;
@@ -587,7 +703,16 @@ MultExp: Term
                 node->code += term->code;
                 node->code += multexp->code;
             }
-        } 
+        } if((term->temp == true && term->array == false) || (multexp->temp == true && multexp->array == false)){
+            if(term->temp == false){
+                node->code += multexp->code;
+            } else if(multexp->temp == false){
+                node->code += term->code;
+            } else {
+                node->code += term->code;
+                node->code += multexp->code;
+            }
+        }
         node->code += std::string("/ ") + temp + std::string(", ") + term->result + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
         node->name = temp;
@@ -610,7 +735,16 @@ MultExp: Term
                 node->code += term->code;
                 node->code += multexp->code;
             }
-        } 
+        } if((term->temp == true && term->array == false) || (multexp->temp == true && multexp->array == false)){
+            if(term->temp == false){
+                node->code += multexp->code;
+            } else if(multexp->temp == false){
+                node->code += term->code;
+            } else {
+                node->code += term->code;
+                node->code += multexp->code;
+            }
+        }
         node->code += std::string("% ") + temp + std::string(", ") + term->result + std::string(", ") + multexp->result + std::string("\n");
         node->result = temp;
         node->name = temp;
@@ -676,6 +810,138 @@ Var: IDENTIFIER
         $$ = node;
     }
 ;
+
+VarArray: IDENTIFIER LEFTBRACK NUMBER RIGHTBRACK
+{
+    std::string temp = newTemp();
+    struct CodeNode *node = new CodeNode; 
+    node->name = std::string($1);
+    node->index = std::string($3);
+    std::stringstream ss;
+    ss << node->index;
+    int i;
+    ss >> i;
+    if(i < 0){
+        yyerror("Array index cannot be less than 0");
+    }
+    node->result = temp;
+    node->code = std::string(". ") + temp + std::string("\n");
+    node->code += std::string("=[] ") + temp + std::string(", ") + node->name + std::string(", ") + node->index + std::string("\n");
+    node->temp = true;
+    node->array = true;
+    $$ = node;
+} 
+;
+
+TrueFalse: Expression EQUALITY Expression
+{
+    std::string temp = newTemp();
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *expression1 = $1;
+    struct CodeNode *expression2 = $3;
+    if(expression1->temp == true || expression1->array == true){
+        node->code += expression1->code;
+    }
+    if(expression2->temp == true || expression2->array == true){
+        node->code += expression2->code;
+    }
+    node->code += std::string(". ") + temp + std::string("\n");
+    node->code += std::string("== ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+    node->temp = true;
+    node->result = temp;
+    $$ = node;
+}
+    | Expression NOTEQL Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(". ") + temp + std::string("\n");
+        node->code += std::string("!= ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression LESS Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(". ") + temp + std::string("\n");
+        node->code += std::string("< ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression LESSEQL Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(". ") + temp + std::string("\n");
+        node->code += std::string("<= ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression GREATER Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(". ") + temp + std::string("\n");
+        node->code += std::string("> ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression GREATEREQL Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(". ") + temp + std::string("\n");
+        node->code += std::string(">= ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+; 
 
 
 %%
