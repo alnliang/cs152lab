@@ -461,8 +461,6 @@ Statement: Var EQUALS NUMBER
         node->code += std::string("= ") + std::string($2) + std::string(", ") + Expression->result;
         $$ = node;
     }
-    | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement
-    {}
     | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
     {}
     | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
@@ -495,11 +493,36 @@ Statement: Var EQUALS NUMBER
     {}
 ;
 
+IfStatement: IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *TrueFalse = $3;
+        struct CodeNode *FuncBody = $6;
+        struct CodeNode *ElseStatement = $8;
+        node->code += std::string("if ") + TrueFalse->code + std::string(" goto L1\n");
+        node->code += std::string("L2:\n");
+        node->code += ElseStatement->code;
+        node->code += std::string("goto L3\n");
+        node->code += std::string("L1:\n");
+        node->code += FuncBody->code;
+        node->code += std::string("L3:\n");
+        $$ = node;
+    }
+    ;
+
 ElseStatement: %empty
-{}
-    | ELSE LEFTCURLY Statements RIGHTCURLY
-    {}
-;
+    {
+        struct CodeNode *node = new CodeNode;
+        $$ = node;
+    }
+    | ELSE LEFTCURLY FuncBody RIGHTCURLY
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *FuncBody = $3;
+        node->code = FuncBody->code;
+        $$ = node;
+    }
+    ;
 
 FuncCall: IDENTIFIER LFTPAREN ParamCalls RGTPAREN
 {
