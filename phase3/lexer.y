@@ -135,6 +135,9 @@ std::string generate_label() {
     return ss.str();
 }
 
+bool inside_loop = false; //this is for the BREAK stuff
+
+
 
 %} 
 
@@ -519,7 +522,15 @@ Statement: Var EQUALS NUMBER
         $$ = node;
     }
     | BREAK
-    {}
+    {
+        if (!inside_loop) {
+            yyerror("BREAK statement is outside of loop");
+        } else {
+            // Generate code for the BREAK statement
+            struct CodeNode *node = new CodeNode;
+            node->code = "break;\n";                      //not sure if this should this be = or += 
+            $$ = node;
+    }
 ;
 
 ElseStatement: %empty
