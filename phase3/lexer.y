@@ -521,15 +521,14 @@ Statement: Var EQUALS NUMBER
         node->code += std::string("ret ") + Expression->result;
         $$ = node;
     }
-    | BREAK
+    | BREAK                                          
     {
+        struct CodeNode *node = new CodeNode;
         if (!inside_loop) {
-            yyerror("BREAK statement is outside of loop");
-        } else {
-            // Generate code for the BREAK statement
-            struct CodeNode *node = new CodeNode;
-            node->code = "break;\n";                      //not sure if this should this be = or += 
-            $$ = node;
+            yyerror("BREAK statement is used outside of loop");
+        }
+        node->code = "break;\n";
+        $$ = node;
     }
 ;
 
