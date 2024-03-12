@@ -322,6 +322,13 @@ Statements: Statement SEMICOLON Statements
     struct CodeNode *statements = $3;
     struct CodeNode *node = new CodeNode;
     node->code = (statement->code) + std::string("\n") + (statements->code);
+    if(statement->isBreak == true){
+        node->result = statement->result;
+        node->isBreak = true;
+    } else if(statements->isBreak == true){
+        node->result = statements->result;
+        node->isBreak = true;
+    }
     $$ = node;
 }
     | Statement SEMICOLON
@@ -329,6 +336,10 @@ Statements: Statement SEMICOLON Statements
         struct CodeNode *statement = $1;
         struct CodeNode *node = new CodeNode;
         node->code = (statement->code) + std::string("\n");
+        if(statement->isBreak == true){
+            node->result = statement->result;
+            node->isBreak = true;
+        }
         $$ = node;
     }
 ;
