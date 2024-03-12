@@ -20,6 +20,7 @@ extern int lineCol;
 /*the reason I used extern int here and didn't directly define it is because it's already defined in another file */
 void yyerror(const char *s);
 int tempNum = 0;
+int labelNum = 0;
 std::string newTemp();
 enum Type { Integer, Array };
 struct Symbol {
@@ -192,6 +193,7 @@ void print_symbol_table(void) {
 %type <codenode> Expression
 %type <codenode> func_header
 %type <codenode> TrueFalse
+%type <codenode> ElseStatement
 
 %%
 program: Functions
@@ -461,11 +463,27 @@ Statement: Var EQUALS NUMBER
         node->code += std::string("= ") + std::string($2) + std::string(", ") + Expression->result;
         $$ = node;
     }
-    | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement
+    | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY Statements RIGHTCURLY ElseStatement
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode trueFalse = $3;
+        struct CodeNode elseStatement = $8;
+        struct CodeNode body = $6;
+        std::string boolTemp = trueFalse->result;
+        std::string startIf = newLabel();
+        std::string endif = newLabel();
+        node->code = trueFalse->code;
+        node->code += std::string("?:= ") + startIf + std::string(", ") + boolTemp + std::string('\n');
+        node->code += std::string(":= ") + elseStatement->result + std::string('\n');
+        node->code += std::string(": ") + startIf + std::string('\n');
+        node->code += body->code;
+        node->code += std::string(":= ") + endif + std::string('\n');
+        node->code += elseStatement->code;
+        node->code += std::string(": ") + endif;
+    }
+    | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY Statements RIGHTCURLY
     {}
-    | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
-    {}
-    | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
+    | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY Statements RIGHTCURLY
     {}
     | READ Var
     {}
@@ -496,9 +514,23 @@ Statement: Var EQUALS NUMBER
 ;
 
 ElseStatement: %empty
-{}
+{
+    struct CodeNode *node = new CodeNode;
+    std::string endif = newLabel();
+    node->result = endif;
+    node->code = std::string(": ") + endif + std::string('\n');
+    $$ = node;
+}
     | ELSE LEFTCURLY Statements RIGHTCURLY
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode statements = $3;
+        std::string elseLabel = newLabel();
+        node->result = elseLabel;
+        node->code = std::string(": ") + elseLabel + std::string('\n');
+        node->code += statements->code;
+        $$ = node;
+    }
 ;
 
 FuncCall: IDENTIFIER LFTPAREN ParamCalls RGTPAREN
@@ -953,6 +985,15 @@ std::string newTemp(){
     tempString += stream.str();
     tempNum += 1;
     return tempString;
+}
+
+std::string newLoop(){
+    std::stringstream stream;
+    stream << labelNum;
+    std::string labelString = std::string("label");
+    labelString += stream.str();
+    labelNum += 1;
+    return labelString;
 }
 
 int main(void){
