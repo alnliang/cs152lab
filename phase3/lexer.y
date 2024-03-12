@@ -470,11 +470,10 @@ Statement: Var EQUALS NUMBER
         struct CodeNode *trueFalse = $3;
         struct CodeNode *elseStatement = $8;
         struct CodeNode *body = $6;
-        std::string boolTemp = trueFalse->result;
         std::string startIf = newLabel();
         std::string endif = newLabel();
         node->code = trueFalse->code;
-        node->code += std::string("?:= ") + startIf + std::string(", ") + boolTemp + std::string("\n");
+        node->code += std::string("?:= ") + startIf + std::string(", ") + trueFalse->result + std::string("\n");
         node->code += std::string(":= ") + elseStatement->result + std::string("\n");
         node->code += std::string(": ") + startIf + std::string("\n");
         node->code += body->code;
