@@ -491,10 +491,12 @@ Statement: Var EQUALS NUMBER
         statements->inLoop = true;
         std::string beginLoop = newLabel();
         std::string endLoop = newLabel();
-        node->code = trueFalse->code;
-        node->code += std::string("?:= ") + beginLoop + std::string(", ") + trueFalse->result + std::string("\n");
-        node->code += std::string(":= ") + endLoop + std::string("\n");
+        std::string loopBody = newLabel();
         node->code += std::string(": ") + beginLoop + std::string("\n");
+        node->code = trueFalse->code;
+        node->code += std::string("?:= ") + loopBody + std::string(", ") + trueFalse->result + std::string("\n");
+        node->code += std::string(":= ") + endLoop + std::string("\n");
+        node->code += std::string(": ") + loopBody + std::string("\n");
         node->code += statements->code;
         node->code += std::string(":= ") + beginLoop + std::string("\n");
         node->code += std::string(": ") + endLoop;
