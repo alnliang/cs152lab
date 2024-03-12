@@ -11,6 +11,8 @@ struct CodeNode {
     std::string result = "noResult";
     std::string name = "noName";
     std::string index = "-1";
+    std::string contLabel = "";
+    std::string breakLabel = "";
     bool temp = false;
     bool array = false;
     bool inLoop = false;
@@ -492,6 +494,8 @@ Statement: Var EQUALS NUMBER
         std::string beginLoop = newLabel();
         std::string endLoop = newLabel();
         std::string loopBody = newLabel();
+        statements->contLabel = loopBody;
+        statrements->breakLabel = endLoop;
         node->code = std::string(": ") + beginLoop + std::string("\n");
         node->code += trueFalse->code;
         node->code += std::string("?:= ") + loopBody + std::string(", ") + trueFalse->result + std::string("\n");
@@ -529,7 +533,12 @@ Statement: Var EQUALS NUMBER
         $$ = node;
     }
     | BREAK
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *tempNode = $$;
+        node->code = std::string(":= ") + tempNode->breakLabel;
+        $$ = node;
+    }
 ;
 
 ElseStatement: %empty
