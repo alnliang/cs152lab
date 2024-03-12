@@ -521,7 +521,12 @@ Statement: Var EQUALS NUMBER
         $$ = node;
     }
     | CONT
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *tempNode = $$;
+        node->code = std::string(":= label") + tempNode->contLabel;
+        $$ = node;
+    }
     | RETURN Expression
     {
         struct CodeNode *node = new CodeNode;
