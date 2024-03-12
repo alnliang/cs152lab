@@ -473,6 +473,9 @@ Statement: Var EQUALS NUMBER
         struct CodeNode *trueFalse = $3;
         struct CodeNode *elseStatement = $8;
         struct CodeNode *body = $6;
+        struct CodeNode *tempNode = $$;
+        body->contLabel = tempNode->contLabel;
+        body->breakLabel = tempNode->breakLabel;
         std::string startIf = newLabel();
         std::string endif = newLabel();
         node->code = trueFalse->code;
