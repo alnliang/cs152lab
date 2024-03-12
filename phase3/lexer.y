@@ -495,7 +495,7 @@ Statement: Var EQUALS NUMBER
         std::string endLoop = newLabel();
         std::string loopBody = newLabel();
         statements->contLabel = loopBody;
-        statrements->breakLabel = endLoop;
+        statements->breakLabel = endLoop;
         node->code = std::string(": ") + beginLoop + std::string("\n");
         node->code += trueFalse->code;
         node->code += std::string("?:= ") + loopBody + std::string(", ") + trueFalse->result + std::string("\n");
