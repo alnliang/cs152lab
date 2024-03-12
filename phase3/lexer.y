@@ -11,6 +11,8 @@ struct CodeNode {
     std::string result = "noResult";
     std::string name = "noName";
     std::string index = "-1";
+    std::string contLabel = "";
+    std::string breakLabel = "";
     bool isBreak = false;
     bool cont = false;
     bool temp = false;
@@ -323,11 +325,18 @@ Statements: Statement SEMICOLON Statements
     struct CodeNode *node = new CodeNode;
     node->code = (statement->code) + std::string("\n") + (statements->code);
     if(statement->isBreak == true){
-        node->result = statement->result;
+        node->breakLabel = statement->breakLabel;
         node->isBreak = true;
     } else if(statements->isBreak == true){
-        node->result = statements->result;
+        node->breakLabel = statements->breakLabel;
         node->isBreak = true;
+    }
+    if(statement->isCont == true){
+        node->contLabel = statement->contLabel;
+        node->isCont = true;
+    } else if(statements->isCont == true){
+        node->contLabel = statements->contLabel;
+        node->isCont = true;
     }
     $$ = node;
 }
@@ -337,8 +346,12 @@ Statements: Statement SEMICOLON Statements
         struct CodeNode *node = new CodeNode;
         node->code = (statement->code) + std::string("\n");
         if(statement->isBreak == true){
-            node->result = statement->result;
+            node->breakLabel = statement->breakLabel;
             node->isBreak = true;
+        }
+        if(statement->isCont == true){
+            node->contLabel = statement->contLabel;
+            node->isCont = true;
         }
         $$ = node;
     }
@@ -494,8 +507,10 @@ Statement: Var EQUALS NUMBER
         node->code += std::string(":= ") + endif + std::string("\n");
         node->code += elseStatement->code;
         node->code += std::string(": ") + endif;
+        node->isCont = body->isCont;
+        node->contLabel = body->contLabel;
         node->isBreak = body->isBreak;
-        node->result = body->result;
+        node->breakLabel = body->breakLabel;
         $$ = node;
     }
     | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY Statements RIGHTCURLY
@@ -503,10 +518,15 @@ Statement: Var EQUALS NUMBER
         struct CodeNode *node = new CodeNode;
         struct CodeNode *trueFalse = $3;
         struct CodeNode *statements = $6;
-        std::string beginLoop = newLabel();
+        std::string beginLoop;
         std::string endLoop;
+        if(statements->isCont == true){
+            beginLoop = statements->contLabel;
+        } else {
+            beginLoop = newLabel();
+        }
         if(statements->isBreak == true){
-            endLoop = statements->result;
+            endLoop = statements->breakLabel;
         } else {
             endLoop = newLabel();
         }
@@ -539,7 +559,11 @@ Statement: Var EQUALS NUMBER
     | CONT
     {
         struct CodeNode *node = new CodeNode;
-        
+        node->isCont = true;
+        std::string contLabel = newLabel();
+        node->code = std::string(":= ") + contLabel;
+        node->contLabel = contLabel;
+        $$ = node;
     }
     | RETURN Expression
     {
@@ -557,7 +581,7 @@ Statement: Var EQUALS NUMBER
         node->isBreak = true;
         std::string endLabel = newLabel();
         node->code = std::string(":= ") + endLabel;
-        node->result = endLabel;
+        node->breakLabel = endLabel;
         $$ = node;
     }
 ;
