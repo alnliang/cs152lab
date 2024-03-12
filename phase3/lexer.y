@@ -466,9 +466,9 @@ Statement: Var EQUALS NUMBER
     | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY Statements RIGHTCURLY ElseStatement
     {
         struct CodeNode *node = new CodeNode;
-        struct CodeNode trueFalse = $3;
-        struct CodeNode elseStatement = $8;
-        struct CodeNode body = $6;
+        struct CodeNode *trueFalse = $3;
+        struct CodeNode *elseStatement = $8;
+        struct CodeNode *body = $6;
         std::string boolTemp = trueFalse->result;
         std::string startIf = newLabel();
         std::string endif = newLabel();
@@ -524,7 +524,7 @@ ElseStatement: %empty
     | ELSE LEFTCURLY Statements RIGHTCURLY
     {
         struct CodeNode *node = new CodeNode;
-        struct CodeNode statements = $3;
+        struct CodeNode *statements = $3;
         std::string elseLabel = newLabel();
         node->result = elseLabel;
         node->code = std::string(": ") + elseLabel + std::string('\n');
@@ -878,7 +878,7 @@ TrueFalse: Expression EQUALITY Expression
         node->code += expression2->code;
     }
     node->code += std::string(". ") + temp + std::string("\n");
-    node->code += std::string("== ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+    node->code += std::string("== ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
     node->temp = true;
     node->result = temp;
     $$ = node;
@@ -896,7 +896,7 @@ TrueFalse: Expression EQUALITY Expression
             node->code += expression2->code;
         }
         node->code += std::string(". ") + temp + std::string("\n");
-        node->code += std::string("!= ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->code += std::string("!= ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
         node->temp = true;
         node->result = temp;
         $$ = node;
@@ -914,7 +914,7 @@ TrueFalse: Expression EQUALITY Expression
             node->code += expression2->code;
         }
         node->code += std::string(". ") + temp + std::string("\n");
-        node->code += std::string("< ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->code += std::string("< ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
         node->temp = true;
         node->result = temp;
         $$ = node;
@@ -932,7 +932,7 @@ TrueFalse: Expression EQUALITY Expression
             node->code += expression2->code;
         }
         node->code += std::string(". ") + temp + std::string("\n");
-        node->code += std::string("<= ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->code += std::string("<= ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
         node->temp = true;
         node->result = temp;
         $$ = node;
@@ -950,7 +950,7 @@ TrueFalse: Expression EQUALITY Expression
             node->code += expression2->code;
         }
         node->code += std::string(". ") + temp + std::string("\n");
-        node->code += std::string("> ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->code += std::string("> ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
         node->temp = true;
         node->result = temp;
         $$ = node;
@@ -968,7 +968,7 @@ TrueFalse: Expression EQUALITY Expression
             node->code += expression2->code;
         }
         node->code += std::string(". ") + temp + std::string("\n");
-        node->code += std::string(">= ") + temp + std::string(', ') + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->code += std::string(">= ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
         node->temp = true;
         node->result = temp;
         $$ = node;
