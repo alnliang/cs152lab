@@ -543,7 +543,7 @@ Statement: Var EQUALS NUMBER
     {
         struct CodeNode *node = new CodeNode;
         node->isBreak = true;
-        std::string endLabel = newLable();
+        std::string endLabel = newLabel();
         node->code = std::string(":= ") + endLabel;
         node->result = endLabel;
         $$ = node;
