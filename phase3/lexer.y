@@ -480,6 +480,7 @@ Statement: Var EQUALS NUMBER
         node->code += std::string(":= ") + endif + std::string("\n");
         node->code += elseStatement->code;
         node->code += std::string(": ") + endif;
+        $$ = node;
     }
     | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY Statements RIGHTCURLY
     {}
