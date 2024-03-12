@@ -492,8 +492,8 @@ Statement: Var EQUALS NUMBER
         std::string beginLoop = newLabel();
         std::string endLoop = newLabel();
         std::string loopBody = newLabel();
-        node->code += std::string(": ") + beginLoop + std::string("\n");
-        node->code = trueFalse->code;
+        node->code = std::string(": ") + beginLoop + std::string("\n");
+        node->code += trueFalse->code;
         node->code += std::string("?:= ") + loopBody + std::string(", ") + trueFalse->result + std::string("\n");
         node->code += std::string(":= ") + endLoop + std::string("\n");
         node->code += std::string(": ") + loopBody + std::string("\n");
