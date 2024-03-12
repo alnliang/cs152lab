@@ -496,7 +496,7 @@ Statement: Var EQUALS NUMBER
         node->code += std::string(":= ") + endLoop + std::string("\n");
         node->code += std::string(": ") + beginLoop + std::string("\n");
         node->code += statements->code;
-        node->code += std::string(":= ") + beginloop + std::string("\n");
+        node->code += std::string(":= ") + beginLoop + std::string("\n");
         node->code += std::string(": ") + endLoop;
         $$ = node;
     }
