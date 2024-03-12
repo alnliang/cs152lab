@@ -22,6 +22,7 @@ void yyerror(const char *s);
 int tempNum = 0;
 int labelNum = 0;
 std::string newTemp();
+std::string newLabel();
 enum Type { Integer, Array };
 struct Symbol {
   std::string name;
@@ -987,7 +988,7 @@ std::string newTemp(){
     return tempString;
 }
 
-std::string newLoop(){
+std::string newLabel(){
     std::stringstream stream;
     stream << labelNum;
     std::string labelString = std::string("label");
