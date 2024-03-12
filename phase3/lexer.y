@@ -871,13 +871,13 @@ TrueFalse: Expression EQUALITY Expression
     struct CodeNode *node = new CodeNode;
     struct CodeNode *expression1 = $1;
     struct CodeNode *expression2 = $3;
+    node->code = std::string(". ") + temp + std::string("\n");
     if(expression1->temp == true || expression1->array == true){
         node->code += expression1->code;
     }
     if(expression2->temp == true || expression2->array == true){
         node->code += expression2->code;
     }
-    node->code += std::string(". ") + temp + std::string("\n");
     node->code += std::string("== ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
     node->temp = true;
     node->result = temp;
@@ -889,13 +889,13 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
+        node->code = std::string(". ") + temp + std::string("\n");
         if(expression1->temp == true || expression1->array == true){
             node->code += expression1->code;
         }
         if(expression2->temp == true || expression2->array == true){
             node->code += expression2->code;
         }
-        node->code += std::string(". ") + temp + std::string("\n");
         node->code += std::string("!= ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
         node->temp = true;
         node->result = temp;
@@ -907,13 +907,13 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
+        node->code = std::string(". ") + temp + std::string("\n");
         if(expression1->temp == true || expression1->array == true){
             node->code += expression1->code;
         }
         if(expression2->temp == true || expression2->array == true){
             node->code += expression2->code;
         }
-        node->code += std::string(". ") + temp + std::string("\n");
         node->code += std::string("< ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
         node->temp = true;
         node->result = temp;
@@ -925,13 +925,13 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
+        node->code = std::string(". ") + temp + std::string("\n");
         if(expression1->temp == true || expression1->array == true){
             node->code += expression1->code;
         }
         if(expression2->temp == true || expression2->array == true){
             node->code += expression2->code;
         }
-        node->code += std::string(". ") + temp + std::string("\n");
         node->code += std::string("<= ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
         node->temp = true;
         node->result = temp;
@@ -943,13 +943,13 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
+        node->code = std::string(". ") + temp + std::string("\n");
         if(expression1->temp == true || expression1->array == true){
             node->code += expression1->code;
         }
         if(expression2->temp == true || expression2->array == true){
             node->code += expression2->code;
         }
-        node->code += std::string(". ") + temp + std::string("\n");
         node->code += std::string("> ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
         node->temp = true;
         node->result = temp;
@@ -961,13 +961,13 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
+        node->code = std::string(". ") + temp + std::string("\n");
         if(expression1->temp == true || expression1->array == true){
             node->code += expression1->code;
         }
         if(expression2->temp == true || expression2->array == true){
             node->code += expression2->code;
         }
-        node->code += std::string(". ") + temp + std::string("\n");
         node->code += std::string(">= ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
         node->temp = true;
         node->result = temp;
