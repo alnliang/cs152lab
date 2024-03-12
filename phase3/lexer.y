@@ -13,6 +13,7 @@ struct CodeNode {
     std::string index = "-1";
     bool temp = false;
     bool array = false;
+    bool inLoop = false;
 };
 extern int yylex();
 extern int lineNum;
@@ -483,7 +484,22 @@ Statement: Var EQUALS NUMBER
         $$ = node;
     }
     | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY Statements RIGHTCURLY
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *trueFalse = $3;
+        struct CodeNode *statements = $6;
+        statements->inLoop = true;
+        std::string beginLoop = newLabel();
+        std::string endLoop = newLabel();
+        node->code = trueFalse->code;
+        node->code += std::string("?:= ") + beginLoop + std::string(", ") + trueFalse->result + std::string("\n");
+        node->code += std::string(":= ") + endLoop + std::string("\n");
+        node->code += std::string(": ") + beginLoop + std::string("\n");
+        node->code += statements->code;
+        node->code += std::string(":= ") + beginloop + std::string("\n");
+        node->code += std::string(": ") + endLoop;
+        $$ = node;
+    }
     | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY Statements RIGHTCURLY
     {}
     | READ Var
