@@ -536,7 +536,7 @@ Statement: Var EQUALS NUMBER
     {
         struct CodeNode *node = new CodeNode;
         struct CodeNode *tempNode = $$;
-        node->code = std::string(":= ") + tempNode->breakLabel;
+        node->code = std::string(":= label") + tempNode->breakLabel;
         $$ = node;
     }
 ;
