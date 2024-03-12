@@ -1,0 +1,33 @@
+func main
+. a
+. b
+. c
+= a, 100
+= b, 50
+. _temp0
+< _temp0, a, b
+?:= label1, _temp0
+:= label0
+: label1
+= c, 0
+:= label2
+: label0
+= c, 1
+: label2
+.> c
+= a, 100
+= b, 50
+. _temp1
+>= _temp1, a, b
+?:= label4, _temp1
+:= label3
+: label4
+= c, 0
+:= label5
+: label3
+= c, 1
+: label5
+.> c
+endfunc
+
+
