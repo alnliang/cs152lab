@@ -14,7 +14,7 @@ struct CodeNode {
     std::string contLabel = "";
     std::string breakLabel = "";
     bool isBreak = false;
-    bool cont = false;
+    bool isCont = false;
     bool temp = false;
     bool array = false;
     bool inLoop = false;
