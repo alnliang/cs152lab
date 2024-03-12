@@ -474,7 +474,7 @@ Statement: Var EQUALS NUMBER
         std::string startIf = newLabel();
         std::string endif = newLabel();
         node->code = trueFalse->code;
-        node->code += std::string("?:= ") + startIf + std::string(", ") + boolTemp + std::string("\n"));
+        node->code += std::string("?:= ") + startIf + std::string(", ") + boolTemp + std::string("\n");
         node->code += std::string(":= ") + elseStatement->result + std::string("\n");
         node->code += std::string(": ") + startIf + std::string("\n");
         node->code += body->code;
