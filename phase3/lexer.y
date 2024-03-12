@@ -474,11 +474,11 @@ Statement: Var EQUALS NUMBER
         std::string startIf = newLabel();
         std::string endif = newLabel();
         node->code = trueFalse->code;
-        node->code += std::string("?:= ") + startIf + std::string(", ") + boolTemp + std::string('\n');
-        node->code += std::string(":= ") + elseStatement->result + std::string('\n');
-        node->code += std::string(": ") + startIf + std::string('\n');
+        node->code += std::string("?:= ") + startIf + std::string(", ") + boolTemp + std::string("\n"));
+        node->code += std::string(":= ") + elseStatement->result + std::string("\n");
+        node->code += std::string(": ") + startIf + std::string("\n");
         node->code += body->code;
-        node->code += std::string(":= ") + endif + std::string('\n');
+        node->code += std::string(":= ") + endif + std::string("\n");
         node->code += elseStatement->code;
         node->code += std::string(": ") + endif;
     }
@@ -519,7 +519,7 @@ ElseStatement: %empty
     struct CodeNode *node = new CodeNode;
     std::string endif = newLabel();
     node->result = endif;
-    node->code = std::string(": ") + endif + std::string('\n');
+    node->code = std::string(": ") + endif + std::string("\n");
     $$ = node;
 }
     | ELSE LEFTCURLY Statements RIGHTCURLY
@@ -528,7 +528,7 @@ ElseStatement: %empty
         struct CodeNode *statements = $3;
         std::string elseLabel = newLabel();
         node->result = elseLabel;
-        node->code = std::string(": ") + elseLabel + std::string('\n');
+        node->code = std::string(": ") + elseLabel + std::string("\n");
         node->code += statements->code;
         $$ = node;
     }
