@@ -494,9 +494,44 @@ Statement: Var EQUALS NUMBER
         $$ = node;
     }
     | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *FuncBody = $6;
+        struct CodeNode *TrueFalse = $3;
+    
+        std::string label_start = generate_label();
+        std::string label_end = generate_label();
+    
+        std::string loop_start = label_start + std::string(":\n");
+        std::string condition_code = TrueFalse->code;
+        condition_code += std::string("goto ") + label_end + std::string("\n");
+        std::string body_code = FuncBody->code;
+        node->code = loop_start + condition_code + body_code + std::string("goto ") + label_start + std::string("\n") + label_end + std::string(":\n");
+        $$ = node;
+    }
     | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *FuncBody = $11;
+        struct CodeNode *TrueFalse = $7;
+        struct CodeNode *Expression = $9;
+    
+        std::string label_start = generate_label();
+        std::string label_end = generate_label();
+    
+        std::string variable_name = std::string($4);
+        std::string init_code = std::string(". ") + variable_name + std::string("\n");
+        init_code += std::string("= ") + variable_name + std::string(", ") + std::string($6) + std::string("\n");
+    
+        std::string loop_start = label_start + std::string(":\n");
+        std::string condition_code = TrueFalse->code;
+        condition_code += std::string("goto ") + label_end + std::string("\n");
+    
+        std::string body_code = FuncBody->code;
+        std::string increment_code = Expression->code;
+        node->code = init_code + loop_start + condition_code + body_code + increment_code + std::string("goto ") + label_start + std::string("\n") + label_end + std::string(":\n");
+        $$ = node;
+    }
     | READ Var
     {}
     | PRINT Expression
@@ -510,7 +545,14 @@ Statement: Var EQUALS NUMBER
         $$ = node;
     }
     | CONT
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        if (!inside_loop) {
+            yyerror("CONT statement is used outside of loop");
+        }
+        node->code = "continue;\n";
+        $$ = node;
+    }
     | RETURN Expression
     {
         struct CodeNode *node = new CodeNode;
