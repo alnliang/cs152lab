@@ -30,8 +30,10 @@ extern int lineCol;
 void yyerror(const char *s);
 int tempNum = 0;
 int labelNum = 0;
-int branchNum = 0;
-std::vector<bool> branchInLoop;
+int breakNum = 0;
+int contNum = 0;
+std::vector<bool> breakInLoop;
+std::vector<bool> contInLoop;
 std::string newTemp();
 std::string newLabel();
 enum Type { Integer, Array };
@@ -214,9 +216,14 @@ program: Functions
         if(findFunction(func_name) == false){
             yyerror("main function not declared");
         }
-        for(int i = 0; i < branchInLoop.size(); i++){
-            if(branchInLoop.at(i) == false){
-                yyerror("branch statement not in loop");
+        for(int i = 0; i < breakInLoop.size(); i++){
+            if(breakInLoop.at(i) == false){
+                yyerror("break statement not in loop");
+            }
+        }
+        for(int j = 0; j < contInLoop.size(); j++){
+            if(contInLoop.at(j) == false){
+                yyerror("cont statement not in loop");
             }
         }
         struct CodeNode *node = $1;
@@ -556,7 +563,10 @@ Statement: Var EQUALS NUMBER
         node->isBreak = statements->isBreak;
         node->isCont = statements->isCont;
         if(node->isBreak == true){
-            branchInLoop.at(branchNum - 1) = true;
+            breakInLoop.at(breakNum - 1) = true;
+        }
+        if(node->isCont == true){
+            contInLoop.at(contNum - 1) = true;
         }
         $$ = node;
     }
@@ -578,8 +588,8 @@ Statement: Var EQUALS NUMBER
     {
         struct CodeNode *node = new CodeNode;
         node->isCont = true;
-        int num = branchNum++;
-        branchInLoop.push_back(false);
+        int num = contNum++;
+        contInLoop.push_back(false);
         std::string contLabel = newLabel();
         node->code = std::string(":= ") + contLabel;
         node->contLabel = contLabel;
@@ -599,8 +609,8 @@ Statement: Var EQUALS NUMBER
     {
         struct CodeNode *node = new CodeNode;
         node->isBreak = true;
-        int num = branchNum++;
-        branchInLoop.push_back(false);
+        int num = breakNum++;
+        breakInLoop.push_back(false);
         std::string endLabel = newLabel();
         node->code = std::string(":= ") + endLabel;
         node->breakLabel = endLabel;
