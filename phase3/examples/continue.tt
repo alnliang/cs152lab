@@ -5,9 +5,9 @@ func main(){
         if (i >= 4) {
             clog(i);
             i = i + 2;
-            continue;
         };
         clog(i);
         i = i + 1;
     };
+    continue;
 }
