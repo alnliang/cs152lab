@@ -30,6 +30,8 @@ extern int lineCol;
 void yyerror(const char *s);
 int tempNum = 0;
 int labelNum = 0;
+int branchNum = 0;
+std::vector<bool> branchInLoop;
 std::string newTemp();
 std::string newLabel();
 enum Type { Integer, Array };
@@ -212,6 +214,11 @@ program: Functions
         if(findFunction(func_name) == false){
             yyerror("main function not declared");
         }
+        for(int i = 0; i < branchInLoop.size(); i++){
+            if(branchInLoop.at(i) == false){
+                yyerror("branch statement not in loop");
+            }
+        }
         struct CodeNode *node = $1;
         printf("%s\n", node->code.c_str()); 
     }
@@ -343,8 +350,6 @@ Statements: Statement SEMICOLON Statements
         node->contLabel = statements->contLabel;
         node->isCont = true;
     }
-    statement->setLoop(tempNode->inLoop);
-    statements->setLoop(tempNode->inLoop);
     $$ = node;
 }
     | Statement SEMICOLON
@@ -361,7 +366,6 @@ Statements: Statement SEMICOLON Statements
             node->contLabel = statement->contLabel;
             node->isCont = true;
         }
-        statement->setLoop(tempNode->inLoop);
         $$ = node;
     }
 ;
@@ -509,7 +513,6 @@ Statement: Var EQUALS NUMBER
         struct CodeNode *tempNode = $$;
         std::string startIf = newLabel();
         std::string endif = newLabel();
-        body->setLoop(tempNode->inLoop);
         node->code = trueFalse->code;
         node->code += std::string("?:= ") + startIf + std::string(", ") + trueFalse->result + std::string("\n");
         node->code += std::string(":= ") + elseStatement->result + std::string("\n");
@@ -548,11 +551,13 @@ Statement: Var EQUALS NUMBER
         node->code += std::string(":= ") + endLoop + std::string("\n");
         node->code += std::string(": ") + loopBody + std::string("\n");
         node->code += statements->code;
-        statements->setLoop(true);
         node->code += std::string(":= ") + beginLoop + std::string("\n");
         node->code += std::string(": ") + endLoop;
         node->isBreak = statements->isBreak;
         node->isCont = statements->isCont;
+        if(node->isBreak == true){
+            branchInLoop.at(branchNum - 1) = true;
+        }
         $$ = node;
     }
     | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY Statements RIGHTCURLY
@@ -572,11 +577,9 @@ Statement: Var EQUALS NUMBER
     | CONT
     {
         struct CodeNode *node = new CodeNode;
-        struct CodeNode *tempNode = $$;
-        if(tempNode->inLoop == false){
-            yyerror("continue statement outside of loop.");
-        }
         node->isCont = true;
+        int num = branchNum++;
+        branchInLoop.push_back(false);
         std::string contLabel = newLabel();
         node->code = std::string(":= ") + contLabel;
         node->contLabel = contLabel;
@@ -595,11 +598,9 @@ Statement: Var EQUALS NUMBER
     | BREAK
     {
         struct CodeNode *node = new CodeNode;
-        struct CodeNode *tempNode = $$;
-        if(tempNode->inLoop == false){
-            yyerror("break statement outside of loop.");
-        }
         node->isBreak = true;
+        int num = branchNum++;
+        branchInLoop.push_back(false);
         std::string endLabel = newLabel();
         node->code = std::string(":= ") + endLabel;
         node->breakLabel = endLabel;
