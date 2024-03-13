@@ -323,6 +323,7 @@ Statements: Statement SEMICOLON Statements
     struct CodeNode *statement = $1;
     struct CodeNode *statements = $3;
     struct CodeNode *node = new CodeNode;
+    struct CodeNode *tempNode = $$;
     node->code = (statement->code) + std::string("\n") + (statements->code);
     if(statement->isBreak == true){
         node->breakLabel = statement->breakLabel;
@@ -338,12 +339,15 @@ Statements: Statement SEMICOLON Statements
         node->contLabel = statements->contLabel;
         node->isCont = true;
     }
+    statement->inLoop = tempNode->inLoop;
+    statements->inLoop = tempNode->inLoop;
     $$ = node;
 }
     | Statement SEMICOLON
     {
         struct CodeNode *statement = $1;
         struct CodeNode *node = new CodeNode;
+        struct CodeNode *tempNode = $$;
         node->code = (statement->code) + std::string("\n");
         if(statement->isBreak == true){
             node->breakLabel = statement->breakLabel;
@@ -353,6 +357,7 @@ Statements: Statement SEMICOLON Statements
             node->contLabel = statement->contLabel;
             node->isCont = true;
         }
+        statement->inLoop = tempNode->inLoopp;
         $$ = node;
     }
 ;
@@ -497,8 +502,10 @@ Statement: Var EQUALS NUMBER
         struct CodeNode *trueFalse = $3;
         struct CodeNode *elseStatement = $8;
         struct CodeNode *body = $6;
+        struct CodeNode *tempNode = $$;
         std::string startIf = newLabel();
         std::string endif = newLabel();
+        body->inLoop = tempNode->inLoop;
         node->code = trueFalse->code;
         node->code += std::string("?:= ") + startIf + std::string(", ") + trueFalse->result + std::string("\n");
         node->code += std::string(":= ") + elseStatement->result + std::string("\n");
@@ -537,6 +544,7 @@ Statement: Var EQUALS NUMBER
         node->code += std::string(":= ") + endLoop + std::string("\n");
         node->code += std::string(": ") + loopBody + std::string("\n");
         node->code += statements->code;
+        statements->inLoop = true;
         node->code += std::string(":= ") + beginLoop + std::string("\n");
         node->code += std::string(": ") + endLoop;
         node->isBreak = statements->isBreak;
@@ -559,6 +567,10 @@ Statement: Var EQUALS NUMBER
     | CONT
     {
         struct CodeNode *node = new CodeNode;
+        struct CodeNode *tempNode = $$;
+        if(tempNode->inLoop == false){
+            yyerror("continue statement outside of loop.");
+        }
         node->isCont = true;
         std::string contLabel = newLabel();
         node->code = std::string(":= ") + contLabel;
@@ -578,6 +590,10 @@ Statement: Var EQUALS NUMBER
     | BREAK
     {
         struct CodeNode *node = new CodeNode;
+        struct CodeNode *tempNode = $$;
+        if(tempNode->inLoop == false){
+            yyerror("break statement outside of loop.");
+        }
         node->isBreak = true;
         std::string endLabel = newLabel();
         node->code = std::string(":= ") + endLabel;
