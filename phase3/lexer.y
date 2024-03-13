@@ -960,6 +960,42 @@ TrueFalse: Expression EQUALITY Expression
     struct CodeNode *node = new CodeNode;
     struct CodeNode *expression1 = $1;
     struct CodeNode *expression2 = $3;
+    if(expression1->temp == false){
+        std::string exp1name = expression1->name;
+        if(expression1->array == true){
+            if(find(exp1name, Array) == false){
+                yyerror("Variable not initialized");
+            }
+            if(find(exp1name, Integer)){
+                yyerror("Variable is an integer type");
+            }
+        } else {
+            if(find(exp1name, Integer) == false){
+                yyerror("Variable not initialized");
+            }
+            if(find(exp1name, Array)){
+                yyerror("Variable is an array type");
+            }
+        }
+    }
+    if(expression2->temp == false){
+        std::string exp2name = expression2->name;
+        if(expression2->array == true){
+            if(find(exp2name, Array) == false){
+                yyerror("Variable not initialized");
+            }
+            if(find(exp2name, Integer)){
+                yyerror("Variable is an integer type");
+            }
+        } else {
+            if(find(exp2name, Integer) == false){
+                yyerror("Variable not initialized");
+            }
+            if(find(exp2name, Array)){
+                yyerror("Variable is an array type");
+            }
+        }
+    }
     node->code = std::string(". ") + temp + std::string("\n");
     if(expression1->temp == true || expression1->array == true){
         node->code += expression1->code;
@@ -978,6 +1014,42 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
+        if(expression1->temp == false){
+            std::string exp1name = expression1->name;
+            if(expression1->array == true){
+                if(find(exp1name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp1name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        if(expression2->temp == false){
+            std::string exp2name = expression2->name;
+            if(expression2->array == true){
+                if(find(exp2name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp2name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
         node->code = std::string(". ") + temp + std::string("\n");
         if(expression1->temp == true || expression1->array == true){
             node->code += expression1->code;
@@ -996,6 +1068,42 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
+        if(expression1->temp == false){
+            std::string exp1name = expression1->name;
+            if(expression1->array == true){
+                if(find(exp1name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp1name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        if(expression2->temp == false){
+            std::string exp2name = expression2->name;
+            if(expression2->array == true){
+                if(find(exp2name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp2name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
         node->code = std::string(". ") + temp + std::string("\n");
         if(expression1->temp == true || expression1->array == true){
             node->code += expression1->code;
@@ -1014,6 +1122,42 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
+        if(expression1->temp == false){
+            std::string exp1name = expression1->name;
+            if(expression1->array == true){
+                if(find(exp1name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp1name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        if(expression2->temp == false){
+            std::string exp2name = expression2->name;
+            if(expression2->array == true){
+                if(find(exp2name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp2name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
         node->code = std::string(". ") + temp + std::string("\n");
         if(expression1->temp == true || expression1->array == true){
             node->code += expression1->code;
@@ -1032,6 +1176,42 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
+        if(expression1->temp == false){
+            std::string exp1name = expression1->name;
+            if(expression1->array == true){
+                if(find(exp1name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp1name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        if(expression2->temp == false){
+            std::string exp2name = expression2->name;
+            if(expression2->array == true){
+                if(find(exp2name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp2name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
         node->code = std::string(". ") + temp + std::string("\n");
         if(expression1->temp == true || expression1->array == true){
             node->code += expression1->code;
@@ -1050,6 +1230,42 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
+        if(expression1->temp == false){
+            std::string exp1name = expression1->name;
+            if(expression1->array == true){
+                if(find(exp1name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp1name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        if(expression2->temp == false){
+            std::string exp2name = expression2->name;
+            if(expression2->array == true){
+                if(find(exp2name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp2name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
         node->code = std::string(". ") + temp + std::string("\n");
         if(expression1->temp == true || expression1->array == true){
             node->code += expression1->code;
