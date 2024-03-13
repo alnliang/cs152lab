@@ -549,6 +549,7 @@ Statement: Var EQUALS NUMBER
         node->code += std::string(":= ") + beginLoop + std::string("\n");
         node->code += std::string(": ") + endLoop;
         node->isBreak = statements->isBreak;
+        node->isCont = statements->isCont;
         $$ = node;
     }
     | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY Statements RIGHTCURLY
