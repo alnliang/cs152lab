@@ -19,6 +19,9 @@ struct CodeNode {
     bool array = false;
     bool inLoop = false;
     bool isNum = false;
+    void setLoop(bool loop){
+        this->inLoop = loop;
+    }
 };
 extern int yylex();
 extern int lineNum;
@@ -340,8 +343,8 @@ Statements: Statement SEMICOLON Statements
         node->contLabel = statements->contLabel;
         node->isCont = true;
     }
-    statement->inLoop = tempNode->inLoop;
-    statements->inLoop = tempNode->inLoop;
+    statement->setLoop(tempNode->inLoop);
+    statements->setLoop(tempNode->inLoop);
     $$ = node;
 }
     | Statement SEMICOLON
@@ -358,7 +361,7 @@ Statements: Statement SEMICOLON Statements
             node->contLabel = statement->contLabel;
             node->isCont = true;
         }
-        statement->inLoop = tempNode->inLoop;
+        statement->setLoop(tempNode->inLoop);
         $$ = node;
     }
 ;
@@ -506,7 +509,7 @@ Statement: Var EQUALS NUMBER
         struct CodeNode *tempNode = $$;
         std::string startIf = newLabel();
         std::string endif = newLabel();
-        body->inLoop = tempNode->inLoop;
+        body->setLoop(tempNode->inLoop);
         node->code = trueFalse->code;
         node->code += std::string("?:= ") + startIf + std::string(", ") + trueFalse->result + std::string("\n");
         node->code += std::string(":= ") + elseStatement->result + std::string("\n");
@@ -545,7 +548,7 @@ Statement: Var EQUALS NUMBER
         node->code += std::string(":= ") + endLoop + std::string("\n");
         node->code += std::string(": ") + loopBody + std::string("\n");
         node->code += statements->code;
-        statements->inLoop = true;
+        statements->setLoop(true);
         node->code += std::string(":= ") + beginLoop + std::string("\n");
         node->code += std::string(": ") + endLoop;
         node->isBreak = statements->isBreak;
