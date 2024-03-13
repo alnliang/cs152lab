@@ -1,7 +1,7 @@
 func main(){
  int i;
     i = 0;
-    while (c < 10) {
+    while (i < 10) {
         if (i >= 4) {
             break;
         };
