@@ -5,5 +5,5 @@ func main(){
         clog(i);
         i = i + 1;
     };
-    break
+    break;
 }
