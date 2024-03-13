@@ -18,6 +18,7 @@ struct CodeNode {
     bool temp = false;
     bool array = false;
     bool inLoop = false;
+    bool isNum = false;
 };
 extern int yylex();
 extern int lineNum;
@@ -686,6 +687,7 @@ Expression: MultExp
     node->temp = MultExp->temp;
     node->name = MultExp->name;
     node->index = MultExp->index;
+    node->isNum = MultExp->isNum;
     $$ = node;
 }
     | MultExp PLUS Expression
@@ -774,6 +776,7 @@ MultExp: Term
     node->temp = term->temp;
     node->name = term->name;
     node->index = term->index;
+    node->isNum = term->isNum;
     $$ = node;
 }
     | Term TIMES MultExp
@@ -894,6 +897,7 @@ Term: Var
         struct CodeNode *node = new CodeNode;
         node->code = std::string($1);
         node->result = std::string($1);
+        node->isNum = true;
         $$ = node;
     }
     | LFTPAREN Expression RGTPAREN
@@ -960,7 +964,7 @@ TrueFalse: Expression EQUALITY Expression
     struct CodeNode *node = new CodeNode;
     struct CodeNode *expression1 = $1;
     struct CodeNode *expression2 = $3;
-    if(expression1->temp == false){
+    if(expression1->temp == false && expression1->isNum == false){
         std::string exp1name = expression1->name;
         if(expression1->array == true){
             if(find(exp1name, Array) == false){
@@ -978,7 +982,7 @@ TrueFalse: Expression EQUALITY Expression
             }
         }
     }
-    if(expression2->temp == false){
+    if(expression2->temp == false && expression2->isNum == false){
         std::string exp2name = expression2->name;
         if(expression2->array == true){
             if(find(exp2name, Array) == false){
@@ -1014,7 +1018,7 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
-        if(expression1->temp == false){
+        if(expression1->temp == false && expression1->isNum == false){
             std::string exp1name = expression1->name;
             if(expression1->array == true){
                 if(find(exp1name, Array) == false){
@@ -1032,7 +1036,7 @@ TrueFalse: Expression EQUALITY Expression
                 }
             }
         }
-        if(expression2->temp == false){
+        if(expression2->temp == false && expression2->isNum == false){
             std::string exp2name = expression2->name;
             if(expression2->array == true){
                 if(find(exp2name, Array) == false){
@@ -1068,7 +1072,7 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
-        if(expression1->temp == false){
+        if(expression1->temp == false && expression1->isNum == false){
             std::string exp1name = expression1->name;
             if(expression1->array == true){
                 if(find(exp1name, Array) == false){
@@ -1086,7 +1090,7 @@ TrueFalse: Expression EQUALITY Expression
                 }
             }
         }
-        if(expression2->temp == false){
+        if(expression2->temp == false && expression2->isNum == false){
             std::string exp2name = expression2->name;
             if(expression2->array == true){
                 if(find(exp2name, Array) == false){
@@ -1122,7 +1126,7 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
-        if(expression1->temp == false){
+        if(expression1->temp == false && expression1->isNum == false){
             std::string exp1name = expression1->name;
             if(expression1->array == true){
                 if(find(exp1name, Array) == false){
@@ -1140,7 +1144,7 @@ TrueFalse: Expression EQUALITY Expression
                 }
             }
         }
-        if(expression2->temp == false){
+        if(expression2->temp == false && expression2->isNum == false){
             std::string exp2name = expression2->name;
             if(expression2->array == true){
                 if(find(exp2name, Array) == false){
@@ -1176,7 +1180,7 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
-        if(expression1->temp == false){
+        if(expression1->temp == false && expression1->isNum == false){
             std::string exp1name = expression1->name;
             if(expression1->array == true){
                 if(find(exp1name, Array) == false){
@@ -1194,7 +1198,7 @@ TrueFalse: Expression EQUALITY Expression
                 }
             }
         }
-        if(expression2->temp == false){
+        if(expression2->temp == false && expression2->isNum == false){
             std::string exp2name = expression2->name;
             if(expression2->array == true){
                 if(find(exp2name, Array) == false){
@@ -1230,7 +1234,7 @@ TrueFalse: Expression EQUALITY Expression
         struct CodeNode *node = new CodeNode;
         struct CodeNode *expression1 = $1;
         struct CodeNode *expression2 = $3;
-        if(expression1->temp == false){
+        if(expression1->temp == false && expression1->isNum == false){
             std::string exp1name = expression1->name;
             if(expression1->array == true){
                 if(find(exp1name, Array) == false){
@@ -1248,7 +1252,7 @@ TrueFalse: Expression EQUALITY Expression
                 }
             }
         }
-        if(expression2->temp == false){
+        if(expression2->temp == false && expression2->isNum == false){
             std::string exp2name = expression2->name;
             if(expression2->array == true){
                 if(find(exp2name, Array) == false){
