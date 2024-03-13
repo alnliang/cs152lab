@@ -11,8 +11,17 @@ struct CodeNode {
     std::string result = "noResult";
     std::string name = "noName";
     std::string index = "-1";
+    std::string contLabel = "";
+    std::string breakLabel = "";
+    bool isBreak = false;
+    bool isCont = false;
     bool temp = false;
     bool array = false;
+    bool inLoop = false;
+    bool isNum = false;
+    void setLoop(bool loop){
+        this->inLoop = loop;
+    }
 };
 extern int yylex();
 extern int lineNum;
@@ -20,7 +29,13 @@ extern int lineCol;
 /*the reason I used extern int here and didn't directly define it is because it's already defined in another file */
 void yyerror(const char *s);
 int tempNum = 0;
+int labelNum = 0;
+int breakNum = 0;
+int contNum = 0;
+std::vector<bool> breakInLoop;
+std::vector<bool> contInLoop;
 std::string newTemp();
+std::string newLabel();
 enum Type { Integer, Array };
 struct Symbol {
   std::string name;
@@ -191,6 +206,8 @@ void print_symbol_table(void) {
 %type <codenode> VarArray
 %type <codenode> Expression
 %type <codenode> func_header
+%type <codenode> TrueFalse
+%type <codenode> ElseStatement
 
 %%
 program: Functions
@@ -198,6 +215,16 @@ program: Functions
         std::string func_name = "main";
         if(findFunction(func_name) == false){
             yyerror("main function not declared");
+        }
+        for(int i = 0; i < breakInLoop.size(); i++){
+            if(breakInLoop.at(i) == false){
+                yyerror("break statement not in loop");
+            }
+        }
+        for(int j = 0; j < contInLoop.size(); j++){
+            if(contInLoop.at(j) == false){
+                yyerror("cont statement not in loop");
+            }
         }
         struct CodeNode *node = $1;
         printf("%s\n", node->code.c_str()); 
@@ -314,14 +341,38 @@ Statements: Statement SEMICOLON Statements
     struct CodeNode *statement = $1;
     struct CodeNode *statements = $3;
     struct CodeNode *node = new CodeNode;
+    struct CodeNode *tempNode = $$;
     node->code = (statement->code) + std::string("\n") + (statements->code);
+    if(statement->isBreak == true){
+        node->breakLabel = statement->breakLabel;
+        node->isBreak = true;
+    } else if(statements->isBreak == true){
+        node->breakLabel = statements->breakLabel;
+        node->isBreak = true;
+    }
+    if(statement->isCont == true){
+        node->contLabel = statement->contLabel;
+        node->isCont = true;
+    } else if(statements->isCont == true){
+        node->contLabel = statements->contLabel;
+        node->isCont = true;
+    }
     $$ = node;
 }
     | Statement SEMICOLON
     {
         struct CodeNode *statement = $1;
         struct CodeNode *node = new CodeNode;
+        struct CodeNode *tempNode = $$;
         node->code = (statement->code) + std::string("\n");
+        if(statement->isBreak == true){
+            node->breakLabel = statement->breakLabel;
+            node->isBreak = true;
+        }
+        if(statement->isCont == true){
+            node->contLabel = statement->contLabel;
+            node->isCont = true;
+        }
         $$ = node;
     }
 ;
@@ -460,11 +511,66 @@ Statement: Var EQUALS NUMBER
         node->code += std::string("= ") + std::string($2) + std::string(", ") + Expression->result;
         $$ = node;
     }
-    | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY ElseStatement
-    {}
-    | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
-    {}
-    | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY FuncBody RIGHTCURLY
+    | IF LFTPAREN TrueFalse RGTPAREN LEFTCURLY Statements RIGHTCURLY ElseStatement
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *trueFalse = $3;
+        struct CodeNode *elseStatement = $8;
+        struct CodeNode *body = $6;
+        struct CodeNode *tempNode = $$;
+        std::string startIf = newLabel();
+        std::string endif = newLabel();
+        node->code = trueFalse->code;
+        node->code += std::string("?:= ") + startIf + std::string(", ") + trueFalse->result + std::string("\n");
+        node->code += std::string(":= ") + elseStatement->result + std::string("\n");
+        node->code += std::string(": ") + startIf + std::string("\n");
+        node->code += body->code;
+        node->code += std::string(":= ") + endif + std::string("\n");
+        node->code += elseStatement->code;
+        node->code += std::string(": ") + endif;
+        node->isCont = body->isCont;
+        node->contLabel = body->contLabel;
+        node->isBreak = body->isBreak;
+        node->breakLabel = body->breakLabel;
+        $$ = node;
+    }
+    | WHILE LFTPAREN TrueFalse RGTPAREN LEFTCURLY Statements RIGHTCURLY
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *trueFalse = $3;
+        struct CodeNode *statements = $6;
+        std::string beginLoop;
+        std::string endLoop;
+        if(statements->isCont == true){
+            beginLoop = statements->contLabel;
+        } else {
+            beginLoop = newLabel();
+        }
+        if(statements->isBreak == true){
+            endLoop = statements->breakLabel;
+        } else {
+            endLoop = newLabel();
+        }
+        std::string loopBody = newLabel();
+        node->code = std::string(": ") + beginLoop + std::string("\n");
+        node->code += trueFalse->code;
+        node->code += std::string("?:= ") + loopBody + std::string(", ") + trueFalse->result + std::string("\n");
+        node->code += std::string(":= ") + endLoop + std::string("\n");
+        node->code += std::string(": ") + loopBody + std::string("\n");
+        node->code += statements->code;
+        node->code += std::string(":= ") + beginLoop + std::string("\n");
+        node->code += std::string(": ") + endLoop;
+        node->isBreak = statements->isBreak;
+        node->isCont = statements->isCont;
+        if(node->isBreak == true){
+            breakInLoop.at(breakNum - 1) = true;
+        }
+        if(node->isCont == true){
+            contInLoop.at(contNum - 1) = true;
+        }
+        $$ = node;
+    }
+    | FOR LFTPAREN INTEGER IDENTIFIER EQUALS NUMBER SEMICOLON TrueFalse SEMICOLON Expression RGTPAREN LEFTCURLY Statements RIGHTCURLY
     {}
     | READ Var
     {}
@@ -479,7 +585,16 @@ Statement: Var EQUALS NUMBER
         $$ = node;
     }
     | CONT
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        node->isCont = true;
+        int num = contNum++;
+        contInLoop.push_back(false);
+        std::string contLabel = newLabel();
+        node->code = std::string(":= ") + contLabel;
+        node->contLabel = contLabel;
+        $$ = node;
+    }
     | RETURN Expression
     {
         struct CodeNode *node = new CodeNode;
@@ -491,13 +606,36 @@ Statement: Var EQUALS NUMBER
         $$ = node;
     }
     | BREAK
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        node->isBreak = true;
+        int num = breakNum++;
+        breakInLoop.push_back(false);
+        std::string endLabel = newLabel();
+        node->code = std::string(":= ") + endLabel;
+        node->breakLabel = endLabel;
+        $$ = node;
+    }
 ;
 
 ElseStatement: %empty
-{}
+{
+    struct CodeNode *node = new CodeNode;
+    std::string endif = newLabel();
+    node->result = endif;
+    node->code = std::string(": ") + endif + std::string("\n");
+    $$ = node;
+}
     | ELSE LEFTCURLY Statements RIGHTCURLY
-    {}
+    {
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *statements = $3;
+        std::string elseLabel = newLabel();
+        node->result = elseLabel;
+        node->code = std::string(": ") + elseLabel + std::string("\n");
+        node->code += statements->code;
+        $$ = node;
+    }
 ;
 
 FuncCall: IDENTIFIER LFTPAREN ParamCalls RGTPAREN
@@ -564,6 +702,7 @@ Expression: MultExp
     node->temp = MultExp->temp;
     node->name = MultExp->name;
     node->index = MultExp->index;
+    node->isNum = MultExp->isNum;
     $$ = node;
 }
     | MultExp PLUS Expression
@@ -652,6 +791,7 @@ MultExp: Term
     node->temp = term->temp;
     node->name = term->name;
     node->index = term->index;
+    node->isNum = term->isNum;
     $$ = node;
 }
     | Term TIMES MultExp
@@ -772,6 +912,7 @@ Term: Var
         struct CodeNode *node = new CodeNode;
         node->code = std::string($1);
         node->result = std::string($1);
+        node->isNum = true;
         $$ = node;
     }
     | LFTPAREN Expression RGTPAREN
@@ -832,18 +973,330 @@ VarArray: IDENTIFIER LEFTBRACK NUMBER RIGHTBRACK
 } 
 ;
 
-TrueFalse: Term EQUALITY Term
-{}
-    | Term NOTEQL Term
-    {}
-    | Term LESS Term
-    {}
-    | Term LESSEQL Term
-    {}
-    | Term GREATER Term
-    {}
-    | Term GREATEREQL Term
-    {}
+TrueFalse: Expression EQUALITY Expression
+{
+    std::string temp = newTemp();
+    struct CodeNode *node = new CodeNode;
+    struct CodeNode *expression1 = $1;
+    struct CodeNode *expression2 = $3;
+    if(expression1->temp == false && expression1->isNum == false){
+        std::string exp1name = expression1->name;
+        if(expression1->array == true){
+            if(find(exp1name, Array) == false){
+                yyerror("Variable not initialized");
+            }
+            if(find(exp1name, Integer)){
+                yyerror("Variable is an integer type");
+            }
+        } else {
+            if(find(exp1name, Integer) == false){
+                yyerror("Variable not initialized");
+            }
+            if(find(exp1name, Array)){
+                yyerror("Variable is an array type");
+            }
+        }
+    }
+    if(expression2->temp == false && expression2->isNum == false){
+        std::string exp2name = expression2->name;
+        if(expression2->array == true){
+            if(find(exp2name, Array) == false){
+                yyerror("Variable not initialized");
+            }
+            if(find(exp2name, Integer)){
+                yyerror("Variable is an integer type");
+            }
+        } else {
+            if(find(exp2name, Integer) == false){
+                yyerror("Variable not initialized");
+            }
+            if(find(exp2name, Array)){
+                yyerror("Variable is an array type");
+            }
+        }
+    }
+    node->code = std::string(". ") + temp + std::string("\n");
+    if(expression1->temp == true || expression1->array == true){
+        node->code += expression1->code;
+    }
+    if(expression2->temp == true || expression2->array == true){
+        node->code += expression2->code;
+    }
+    node->code += std::string("== ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+    node->temp = true;
+    node->result = temp;
+    $$ = node;
+}
+    | Expression NOTEQL Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == false && expression1->isNum == false){
+            std::string exp1name = expression1->name;
+            if(expression1->array == true){
+                if(find(exp1name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp1name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        if(expression2->temp == false && expression2->isNum == false){
+            std::string exp2name = expression2->name;
+            if(expression2->array == true){
+                if(find(exp2name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp2name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        node->code = std::string(". ") + temp + std::string("\n");
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string("!= ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression LESS Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == false && expression1->isNum == false){
+            std::string exp1name = expression1->name;
+            if(expression1->array == true){
+                if(find(exp1name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp1name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        if(expression2->temp == false && expression2->isNum == false){
+            std::string exp2name = expression2->name;
+            if(expression2->array == true){
+                if(find(exp2name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp2name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        node->code = std::string(". ") + temp + std::string("\n");
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string("< ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression LESSEQL Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == false && expression1->isNum == false){
+            std::string exp1name = expression1->name;
+            if(expression1->array == true){
+                if(find(exp1name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp1name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        if(expression2->temp == false && expression2->isNum == false){
+            std::string exp2name = expression2->name;
+            if(expression2->array == true){
+                if(find(exp2name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp2name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        node->code = std::string(". ") + temp + std::string("\n");
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string("<= ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression GREATER Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == false && expression1->isNum == false){
+            std::string exp1name = expression1->name;
+            if(expression1->array == true){
+                if(find(exp1name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp1name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        if(expression2->temp == false && expression2->isNum == false){
+            std::string exp2name = expression2->name;
+            if(expression2->array == true){
+                if(find(exp2name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp2name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        node->code = std::string(". ") + temp + std::string("\n");
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string("> ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
+    | Expression GREATEREQL Expression
+    {
+        std::string temp = newTemp();
+        struct CodeNode *node = new CodeNode;
+        struct CodeNode *expression1 = $1;
+        struct CodeNode *expression2 = $3;
+        if(expression1->temp == false && expression1->isNum == false){
+            std::string exp1name = expression1->name;
+            if(expression1->array == true){
+                if(find(exp1name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp1name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp1name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        if(expression2->temp == false && expression2->isNum == false){
+            std::string exp2name = expression2->name;
+            if(expression2->array == true){
+                if(find(exp2name, Array) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Integer)){
+                    yyerror("Variable is an integer type");
+                }
+            } else {
+                if(find(exp2name, Integer) == false){
+                    yyerror("Variable not initialized");
+                }
+                if(find(exp2name, Array)){
+                    yyerror("Variable is an array type");
+                }
+            }
+        }
+        node->code = std::string(". ") + temp + std::string("\n");
+        if(expression1->temp == true || expression1->array == true){
+            node->code += expression1->code;
+        }
+        if(expression2->temp == true || expression2->array == true){
+            node->code += expression2->code;
+        }
+        node->code += std::string(">= ") + temp + std::string(", ") + expression1->result + std::string(", ") + expression2->result + std::string("\n");
+        node->temp = true;
+        node->result = temp;
+        $$ = node;
+    }
 ; 
 
 
@@ -856,6 +1309,15 @@ std::string newTemp(){
     tempString += stream.str();
     tempNum += 1;
     return tempString;
+}
+
+std::string newLabel(){
+    std::stringstream stream;
+    stream << labelNum;
+    std::string labelString = std::string("label");
+    labelString += stream.str();
+    labelNum += 1;
+    return labelString;
 }
 
 int main(void){
