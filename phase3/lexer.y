@@ -357,7 +357,7 @@ Statements: Statement SEMICOLON Statements
             node->contLabel = statement->contLabel;
             node->isCont = true;
         }
-        statement->inLoop = tempNode->inLoopp;
+        statement->inLoop = tempNode->inLoop;
         $$ = node;
     }
 ;
