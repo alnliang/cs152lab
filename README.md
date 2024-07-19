@@ -1,4 +1,6 @@
-# Name pending
+# C+++
+
+Basic programming language based on C++ built using FLEX and Bison.
 
 ### Langauge Features
 
